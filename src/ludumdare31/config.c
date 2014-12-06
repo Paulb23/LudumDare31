@@ -5,7 +5,7 @@ static const char *CONFIG_PATH = "../conf/config.ini";
 
 
 static SSL_Window *ld31_create_window(Ld31_config *config) {
-	return SSL_Window_Create(config->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, config->window_width, config->window_height, config->window_res_width, config->window_res_height, 0);
+	return SSL_Window_Create(config->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, config->window_width, config->window_height, 0,0, 0);
 }
 
 

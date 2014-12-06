@@ -261,8 +261,8 @@ void SSL_Tiled_Draw_Map(SSL_Tiled_Map *map, int xOffset, int yOffset, SSL_Window
 			int width = 0;
 			int height = 0;
 			SDL_GetWindowSize(window->window, &width, &height);
-			width = width / map->map.tile_width;
-			height = height / map->map.tile_height;
+			width =  map->map.tile_width;
+			height =  map->map.tile_height;
 
 			for (i = 0; i <= width; i++) {
 				for (j = 0; j <= height; j++) {
