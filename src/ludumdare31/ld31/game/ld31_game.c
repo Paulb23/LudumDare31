@@ -247,7 +247,7 @@ void play_game(Ld31_game *game) {
 
 					if (speed_buy->button_status->clicked && player->coins >= 10) {
 						player->coins -= 10;
-						player->speed++;
+						player->speed += 0.2;
 
 					} else if (speed_buy->button_status->clicked && player->coins < 10) {
 

@@ -11,11 +11,11 @@ typedef struct _ld31_entity_ {
 	char *name;
 	SSL_Image *image;
 	direction direction;
-	int x;
-	int y;
+	float x;
+	float y;
 	int angle;
 
-	int speed;
+	float speed;
 	int projectle_speed;
 	int attack_damage;
 	int attack_speed;
