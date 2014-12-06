@@ -71,9 +71,10 @@ static void update_snowballs(float delta, int speed, Ld31_game *game) {
 				e1->health -= e->entity->damage;
 
 				if (e1->health <= 0) {
-					Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
-					SSL_List_Add(collectibles, c);
-
+					if (rand() % 100 + 0 <= 75) {
+						Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
+						SSL_List_Add(collectibles, c);
+					}
 					SSL_List_Remove(entities, e1);
 					SSL_Image_Destroy(e1->image);
 					free(e1);
