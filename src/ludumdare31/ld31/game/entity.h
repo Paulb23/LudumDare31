@@ -26,7 +26,10 @@ typedef struct _ld31_entity_ {
 
 typedef struct _snowball_ {
 	entity *entity;
-	long deletion_time;
+	int deletionX;
+	int deletionY;
+	int startX;
+	int startY;
 	int damage;
 } Snowball;
 

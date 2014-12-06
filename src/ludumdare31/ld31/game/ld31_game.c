@@ -86,7 +86,11 @@ static void update_snowballs(float delta, int speed, Ld31_game *game) {
 		e->entity->x += speed * sin(radians);
 		e->entity->y -= speed * cos(radians);
 
-		if (SDL_GetTicks() > e->deletion_time || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0 || collided) {
+		double dx = (e->entity->x - e->deletionX);
+		double dy = (e->entity->y - e->deletionY);
+		double dist = sqrt(dx*dx+dy*dy);
+
+		if (dist > (e->entity->range * 10) || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0 || collided) {
 			SSL_List_Remove(snowballs, e);
 			SSL_Image_Destroy(e->entity->image);
 			free(e->entity);
@@ -98,10 +102,16 @@ static void update_snowballs(float delta, int speed, Ld31_game *game) {
 
 static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed, int dmg) {
 	Snowball *e = malloc(sizeof(Snowball));
+	double radians = (angle * PI) / 180;
 	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 16, 16, game->window), up, x, y);
 	e->entity->angle = angle;
 	e->entity->damage = dmg;
-	e->deletion_time = SDL_GetTicks() + prospeed;
+	e->deletionX = x + (prospeed*cos(radians));
+	e->deletionY = y + (prospeed*sin(radians));
+	e->entity->range = prospeed;
+	e->startX = x;
+	e->startY = y;
+
 	SSL_List_Add(snowballs, e);
 	last_shot = SDL_GetTicks();
 }
@@ -160,15 +170,26 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 	}
 }
 
-static void move_entity(entity *e, Ld31_game *game, float delta) {
+static void move_entity(entity *e, entity *player, Ld31_game *game, float delta) {
+
+	if (strcmp(e->name, "fire") == 0 ) {
+
+		double dx = (player->x - e->x);
+		double dy = (player->y - e->y);
+		double dist = sqrt(dx*dx+dy*dy);
+
+		if (dist < 150) {
+			printf("Attack!");
+		}
+	}
 
 }
 
-static void update_entities(Ld31_level *lvl, Ld31_game *game, float delta) {
+static void update_entities(Ld31_level *lvl,entity *player, Ld31_game *game, float delta) {
 		int i;
 		for (i = 1; i <= SSL_List_Size(entities); i++) {
 			entity *e = SSL_List_Get(entities, i);
-			move_entity(e, game, delta);
+			move_entity(e, player, game, delta);
 		}
 }
 
@@ -224,7 +245,7 @@ void play_game(Ld31_game *game) {
 	entity *player = spawn_snowman(game, level);
 	player->speed = 2;
 	player->attack_speed = 500;
-	player->range = 2000;
+	player->range = 15;
 	player->projectle_speed = 4;
 	player->coins = 0;
 	player->health = 100;
@@ -292,7 +313,7 @@ void play_game(Ld31_game *game) {
 				update_snowman(game, player, delta);
 				handle_collision(level, player);
 
-				update_entities(level, game, delta);
+				update_entities(level, player, game, delta);
 			}
 
 			while(SDL_PollEvent(&event)) {
@@ -318,7 +339,7 @@ void play_game(Ld31_game *game) {
 
 					if (range_buy->button_status->clicked && player->coins >= range_by_price) {
 						player->coins -= range_by_price;
-						player->range += 50;
+						player->range += 2;
 						range_by_price *= 2;
 					} else if (range_buy->button_status->clicked && player->coins < range_by_price) {
 
