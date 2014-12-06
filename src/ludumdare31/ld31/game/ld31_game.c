@@ -1,6 +1,7 @@
 #include "../../config.h"
 #include "entity.h"
 #include "ld31_game.h"
+#include "math.h"
 
 int tile_size;
 
@@ -21,10 +22,16 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 			speedy -= 2.5 * delta;
 		}
 
-
+		int x = e->x;
+		int y = e->y;
 
 		e->x += speedx;
 		e->y += speedy;
+
+		int deltaX = e->x - x;
+		int deltaY = e->y - y;
+		int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
+		e->angle = angleInDegrees;
 }
 
 static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
@@ -44,8 +51,16 @@ static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
 		speedy -= 2 * delta;
 	}
 
+	int x = e->x;
+	int y = e->y;
+
 	e->x += speedx;
 	e->y += speedy;
+
+	int deltaX = e->x - x;
+	int deltaY = e->y - y;
+	int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
+	e->angle = angleInDegrees;
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
@@ -135,8 +150,9 @@ void play_game(Ld31_game *game) {
 		fps++;
 
 		SSL_Tiled_Draw_Map(level->map, 0, -32, game->window);
-		SSL_Image_Draw(e->image, e->x, e->y, 0, 0, SDL_FLIP_NONE, game->window);
-		SSL_Image_Draw(e2->image, e2->x, e2->y, 0, 0, SDL_FLIP_NONE, game->window);
+
+		SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+		SSL_Image_Draw(e2->image, e2->x, e2->y, e2->angle, 0, SDL_FLIP_NONE, game->window);
 
 		char buf[3];
 		itoa(s_fps, buf, 10);

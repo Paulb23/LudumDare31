@@ -8,6 +8,7 @@ entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y
 	entitys->direction = dir;
 	entitys->x = x;
 	entitys->y = y;
+	entitys->angle = 0;
 
 	return entitys;
 }

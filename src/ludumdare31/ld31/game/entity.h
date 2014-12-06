@@ -13,6 +13,7 @@ typedef struct _ld31_entity_ {
 	direction direction;
 	int x;
 	int y;
+	int angle;
 } entity;
 
 entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y);
