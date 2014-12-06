@@ -1,0 +1,38 @@
+####################################~~~~~~~###########################################
+#                                    IDEAS                                           #
+####################################~~~~~~~###########################################
+
+Theme: Entire Game on one screen
+
+    Platformer:
+        Main character: snowman
+        Setting: Grass land, cover world in snow
+        Gameplay: Mairo style
+                  Throw snowballs
+                  Avoid fire
+                  spikes
+                  collect coins
+                  
+    Top down:
+        main character: indi ana jones
+        Setting: cave
+        Gameplay: puzzles:
+                    moving blocks
+                    light
+                    
+    Platformer:
+        Fire and water like
+            but with snowman
+            and top down, pokemen style
+            split screen
+            2 charters - snowman WASD
+                       - fire ARROWS
+             
+            
+         ice blocks
+         water
+         have to put out the fire
+         maze
+         buttons leavers
+         
+        
