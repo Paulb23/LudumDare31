@@ -2,6 +2,8 @@
 #include "entity.h"
 #include "ld31_game.h"
 
+int tile_size;
+
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
 			e->x -= 2 * delta;
@@ -48,14 +50,14 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 		}
 	}
 
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) + 1, layer) == 1) {			// down
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) + 1, layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y + 32)/ 32) + 1, layer) == 1) {			// down
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y + 32) / 32) + 1, layer) == 1) {
 			e->y -= 1;
 		}
 	}
 
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) - 1, layer) == 1) {			// up
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) - 1, layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y - 32) / 32), layer) == 1) {			// up
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y - 32) / 32), layer) == 1) {
 			e->y += 1;
 		}
 	}
@@ -66,6 +68,8 @@ Ld31_level *load_level(int level, Ld31_game *game) {
 
 	lvl->map = SSL_Tiled_Map_Load("../extras/resources/maps/test_map.tmx", game->window);
 	lvl->dict = dictionary_new(0);
+
+	tile_size = SSL_Tiled_Get_Tile_Width(lvl->map);
 
 	return lvl;
 }
@@ -114,7 +118,7 @@ void play_game(Ld31_game *game) {
 		}
 		fps++;
 
-		SSL_Tiled_Draw_Map(level->map, 0, 0, game->window);
+		SSL_Tiled_Draw_Map(level->map, 0, -32, game->window);
 		SSL_Image_Draw(e->image, e->x, e->y, 0, 0, SDL_FLIP_NONE, game->window);
 		SSL_Image_Draw(e2->image, e2->x, e2->y, 0, 0, SDL_FLIP_NONE, game->window);
 
