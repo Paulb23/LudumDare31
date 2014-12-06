@@ -218,7 +218,14 @@ void play_game(Ld31_game *game) {
 
 	entities = SSL_List_Create();
 
+	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
+	SSL_Interface *shop_inter = SSL_Interface_Create();
+
+	SSL_Image_Button *speed_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,100,384,100), SSL_Image_Load("../extras/resources/sprites/speed_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, speed_buy);
+
 	int i = 0;
+	int shop_open = 0;
 	while (running) {
 		Uint32 now = SDL_GetTicks();
 		delta += (now - lastTime) / ns;
@@ -228,11 +235,29 @@ void play_game(Ld31_game *game) {
 		SDL_RenderClear(game->window->renderer);
 
 		while (delta >= 1) {
-			update_snowman(game, player, delta);
 
-			handle_collision(level, player);
+			if (!shop_open) {
+				update_snowman(game, player, delta);
+				handle_collision(level, player);
+			}
 
 			while(SDL_PollEvent(&event)) {
+				if (shop_open) {
+					interface_update(shop_inter ,event);
+
+					if (speed_buy->button_status->clicked && player->coins >= 10) {
+						player->coins -= 10;
+						player->speed++;
+
+					} else if (speed_buy->button_status->clicked && player->coins < 10) {
+
+					}
+				}
+
+				if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
+					shop_open = !shop_open;
+				}
+
 				if (event.type == SDL_QUIT) {
 					running = 0;
 					break;
@@ -274,6 +299,11 @@ void play_game(Ld31_game *game) {
 		for (i = 1; i <= SSL_List_Size(entities); i++) {
 			entity *e = SSL_List_Get(entities, i);
 			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+		}
+
+		if (shop_open) {
+			SSL_Image_Draw(shop_back, 0, 0, 0, 0, SDL_FLIP_NONE, game->window);
+			interface_draw(shop_inter, game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
