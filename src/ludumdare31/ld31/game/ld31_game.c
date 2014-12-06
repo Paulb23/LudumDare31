@@ -50,7 +50,7 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		}
 }
 
-static void update_snowballs(float delta, int speed) {
+static void update_snowballs(float delta, int speed, Ld31_game *game) {
 	speed *= delta;
 	int i;
 	for (i = 1; i <= SSL_List_Size(snowballs); i++) {
@@ -66,6 +66,9 @@ static void update_snowballs(float delta, int speed) {
 				e1->health -= e->entity->damage;
 
 				if (e1->health <= 0) {
+					Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
+					SSL_List_Add(collectibles, c);
+
 					SSL_List_Remove(entities, e1);
 					SSL_Image_Destroy(e1->image);
 					free(e1);
@@ -102,7 +105,7 @@ static void update_snowman(Ld31_game *game, entity *e, float delta) {
 	if (SSL_Mouse_Left_Down() && SDL_GetTicks() >= last_shot + e->attack_speed) {
 		snowman_shoot(game, e->x, e->y, e->angle, e->range, e->damage);
 	}
-	update_snowballs(delta, e->projectle_speed);
+	update_snowballs(delta, e->projectle_speed, game);
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
