@@ -21,6 +21,7 @@ Ld31_config *ld31_loadConfig() {
 	config->window_res_height = iniparser_getint(dict, "display:window_res_height", 800);
 	config->window_res_width  = iniparser_getint(dict, "display:window_res_width",  600);
 	config->frames_per_second = iniparser_getint(dict, "display:frames_per_second",  60);
+	MAX_TICKS_PER_SECOND = config->frames_per_second;
 
 	return config;
 }
