@@ -5,34 +5,47 @@
 int tile_size;
 
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
+		int speedx = 0;
+		int speedy = 0;
+
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
-			e->x -= 2 * delta;
+			speedx -= 2.5 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
-				e->x += 2 * delta;
+			speedx += 2.5 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
-				e->y += 2 * delta;
+			speedy += 2.5 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
-				e->y -= 2 * delta;
+			speedy -= 2.5 * delta;
 		}
+
+
+
+		e->x += speedx;
+		e->y += speedy;
 }
 
 static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
+	int speedx = 0;
+	int speedy = 0;
+
 	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.left)) {
-		e->x -= 2 * delta;
+		speedx -= 2.5 * delta;
 	}
 	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.right)) {
-			e->x += 2 * delta;
+		speedx += 2 * delta;
 	}
 	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.down)) {
-			e->y += 2 * delta;
+		speedy += 2 * delta;
 	}
 	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.up)) {
-			e->y -= 2 * delta;
+		speedy -= 2 * delta;
 	}
 
+	e->x += speedx;
+	e->y += speedy;
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
@@ -95,8 +108,8 @@ void play_game(Ld31_game *game) {
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
 	while (running) {
-		Uint32 now = SDL_GetTicks();					// get the current time
-		delta += (now - lastTime) / ns;				// calculate the time passed since our last update
+		Uint32 now = SDL_GetTicks();
+		delta += (now - lastTime) / ns;
 		lastTime = now;
 
 		SDL_RenderPresent(game->window->renderer);
