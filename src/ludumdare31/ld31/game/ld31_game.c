@@ -11,6 +11,10 @@ SSL_List *collectibles;
 SSL_List *entities;
 long last_shot = 0;
 
+static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+  return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
+}
+
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		int x;
 		int y;
@@ -52,11 +56,28 @@ static void update_snowballs(float delta, int speed) {
 	for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 		Snowball *e = SSL_List_Get(snowballs, i);
 
+		int collided = 0;
+		int j = 0;
+		for (j = 1; j <= SSL_List_Size(entities); j++) {
+			entity *e1 = SSL_List_Get(entities, j);
+
+			if (collides(e->entity->x, e->entity->y, 16,16, e1->x, e1->y, tile_size, tile_size)) {
+				collided = 1;
+				e1->health -= e->entity->damage;
+
+				if (e1->health <= 0) {
+					SSL_List_Remove(entities, e1);
+					SSL_Image_Destroy(e1->image);
+					free(e1);
+				}
+			}
+		}
+
 		double radians = (e->entity->angle * PI) / 180;
 		e->entity->x += speed * sin(radians);
 		e->entity->y -= speed * cos(radians);
 
-		if (SDL_GetTicks() > e->deletion_time || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0) {
+		if (SDL_GetTicks() > e->deletion_time || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0 || collided) {
 			SSL_List_Remove(snowballs, e);
 			SSL_Image_Destroy(e->entity->image);
 			free(e->entity);
@@ -66,10 +87,11 @@ static void update_snowballs(float delta, int speed) {
 	}
 }
 
-static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed) {
+static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed, int dmg) {
 	Snowball *e = malloc(sizeof(Snowball));
 	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 16, 16, game->window), up, x, y);
 	e->entity->angle = angle;
+	e->entity->damage = dmg;
 	e->deletion_time = SDL_GetTicks() + prospeed;
 	SSL_List_Add(snowballs, e);
 	last_shot = SDL_GetTicks();
@@ -78,13 +100,9 @@ static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed
 static void update_snowman(Ld31_game *game, entity *e, float delta) {
 	snowman_movement(game, e, delta);
 	if (SSL_Mouse_Left_Down() && SDL_GetTicks() >= last_shot + e->attack_speed) {
-		snowman_shoot(game, e->x, e->y, e->angle, e->range);
+		snowman_shoot(game, e->x, e->y, e->angle, e->range, e->damage);
 	}
 	update_snowballs(delta, e->projectle_speed);
-}
-
-static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
-  return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
@@ -187,6 +205,7 @@ void play_game(Ld31_game *game) {
 	player->attack_damage = 0;
 	player->coins = 0;
 	player->health = 100;
+	player->damage = 50;
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 

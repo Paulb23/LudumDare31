@@ -20,6 +20,7 @@ typedef struct _ld31_entity_ {
 	int attack_damage;
 	int attack_speed;
 	int range;
+	int damage;
 	int coins;
 	int health;
 } entity;
@@ -27,6 +28,7 @@ typedef struct _ld31_entity_ {
 typedef struct _snowball_ {
 	entity *entity;
 	long deletion_time;
+	int damage;
 } Snowball;
 
 typedef struct _collectibles_ {
