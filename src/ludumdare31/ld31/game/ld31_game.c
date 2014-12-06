@@ -211,6 +211,7 @@ void play_game(Ld31_game *game) {
 	player->damage = 50;
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
+	SSL_Font *calibri = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 44);
 
 	collectibles = SSL_List_Create();
 	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 200,200);
@@ -308,7 +309,7 @@ void play_game(Ld31_game *game) {
 			interface_draw(shop_inter, game->window);
 
 			itoa(speed_by_price, buf, 10);
-			SSL_Font_Draw(200, 150, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+			SSL_Font_Draw(250, 145, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
