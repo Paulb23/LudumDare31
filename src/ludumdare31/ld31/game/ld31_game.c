@@ -82,8 +82,8 @@ static void update_snowman(Ld31_game *game, entity *e, float delta) {
 	update_snowballs(delta, e->projectle_speed);
 }
 
-static int collides(entity *e1, entity *e2) {
-  return (e1->x < e2->x + tile_size && e1->x + tile_size > e2->x && e1->y < e2->y + tile_size && e1->y + tile_size > e2->y) ? 1: 0 ;
+static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+  return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
@@ -111,6 +111,20 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {			// up
 		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {
 			e->y += 1;
+		}
+	}
+
+	int i;
+	for (i = 1; i <= SSL_List_Size(collectibles); i++) {
+		Collectible *e1 = SSL_List_Get(collectibles, i);
+		if (collides(e->x, e->y, 32, 32, e1->x, e1->y, 16,16)) {
+			if (strcmp(e1->name, "coin") == 0) {
+				e->coins += e1->value;
+			}
+
+			SSL_Image_Destroy(e1->image);
+			free(e1);
+			SSL_List_Remove(collectibles, e1);
 		}
 	}
 }
@@ -210,7 +224,11 @@ void play_game(Ld31_game *game) {
 		char buf[3];
 		itoa(s_fps, buf, 10);
 		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
-		SSL_Font_Draw(55, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(75, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+
+		itoa(player->coins, buf, 10);
+		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
 
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
