@@ -47,7 +47,7 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 static void update_snowballs(float delta) {
 	int speed = 3 * delta;
 	int i;
-	for (i = 1; i < SSL_List_Size(snowballs); i++) {
+	for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 		Snowball *e = SSL_List_Get(snowballs, i);
 
 		double radians = (e->entity->angle * PI) / 180;
@@ -201,7 +201,7 @@ void play_game(Ld31_game *game) {
 		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
 		SSL_Font_Draw(55, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
 
-		for (i = 1; i < SSL_List_Size(snowballs); i++) {
+		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
 			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
 		}
