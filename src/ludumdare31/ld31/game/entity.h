@@ -22,6 +22,8 @@ typedef struct _ld31_entity_ {
 	int damage;
 	int coins;
 	int health;
+
+	long last_shot;
 } entity;
 
 typedef struct _snowball_ {

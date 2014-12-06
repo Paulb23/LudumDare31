@@ -7,6 +7,7 @@
 
 int tile_size;
 SSL_List *snowballs;
+SSL_List *fireballs;
 SSL_List *collectibles;
 SSL_List *entities;
 long last_shot = 0;
@@ -170,6 +171,55 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 	}
 }
 
+static void update_fireballs(float delta, int speed, entity *player, Ld31_game *game) {
+	speed *= delta;
+	int i;
+	for (i = 1; i <= SSL_List_Size(fireballs); i++) {
+		Snowball *e = SSL_List_Get(fireballs, i);
+
+		int collided = 0;
+		if (collides(e->entity->x, e->entity->y, 16,16, player->x, player->y, tile_size, tile_size)) {
+				player->health -= e->entity->damage;
+				collided = 1;
+				if (player->health <= 0) {
+					printf("Game Over!");
+				}
+		}
+
+		double radians = (e->entity->angle * PI) / 180;
+		e->entity->x += speed * sin(radians);
+		e->entity->y -= speed * cos(radians);
+
+		double dx = (e->entity->x - e->deletionX);
+		double dy = (e->entity->y - e->deletionY);
+		double dist = sqrt(dx*dx+dy*dy);
+
+		if (dist > (e->entity->range * 10) || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0 || collided) {
+			SSL_List_Remove(fireballs, e);
+			SSL_Image_Destroy(e->entity->image);
+			free(e->entity);
+			free(e);
+		}
+
+	}
+}
+
+static void entity_shoot(Ld31_game *game, entity *e1, int x, int y, int angle, int prospeed, int dmg) {
+	Snowball *e = malloc(sizeof(Snowball));
+	double radians = (angle * PI) / 180;
+	e->entity = create_entity("fireball", SSL_Image_Load("../extras/resources/sprites/filreball.png", 16, 16, game->window), up, x, y);
+	e->entity->angle = angle;
+	e->entity->damage = dmg;
+	e->deletionX = x + (prospeed*cos(radians));
+	e->deletionY = y + (prospeed*sin(radians));
+	e->entity->range = prospeed;
+	e->startX = x;
+	e->startY = y;
+
+	SSL_List_Add(fireballs, e);
+	e1->last_shot = SDL_GetTicks();
+}
+
 static void move_entity(entity *e, entity *player, Ld31_game *game, float delta) {
 
 	if (strcmp(e->name, "fire") == 0 ) {
@@ -178,8 +228,15 @@ static void move_entity(entity *e, entity *player, Ld31_game *game, float delta)
 		double dy = (player->y - e->y);
 		double dist = sqrt(dx*dx+dy*dy);
 
-		if (dist < 150) {
-			printf("Attack!");
+		if (dist < 400) {
+			int deltaX = player->x - e->x ;
+			int deltaY = player->y - e->y;
+			int angleInDegrees = atan2(deltaX, -deltaY) * 180 / PI;
+			e->angle = angleInDegrees;
+
+			if (SDL_GetTicks() >= e->last_shot + e->attack_speed) {
+				entity_shoot(game ,e, e->x, e->y, e->angle, 170, 10);
+			}
 		}
 	}
 
@@ -191,6 +248,7 @@ static void update_entities(Ld31_level *lvl,entity *player, Ld31_game *game, flo
 			entity *e = SSL_List_Get(entities, i);
 			move_entity(e, player, game, delta);
 		}
+		update_fireballs(delta, 3, player, game);
 }
 
 Ld31_level *load_level(int level, Ld31_game *game) {
@@ -260,6 +318,7 @@ void play_game(Ld31_game *game) {
 	SSL_List_Add(collectibles, c);
 
 	entities = SSL_List_Create();
+	fireballs = SSL_List_Create();
 
 	SSL_Image *stats_back = SSL_Image_Load("../extras/resources/sprites/stats_back.png", 384, 768, game->window);
 	SSL_Image *gold_icon = SSL_Image_Load("../extras/resources/sprites/gold_icon.png", 32, 32, game->window);
@@ -408,6 +467,11 @@ void play_game(Ld31_game *game) {
 			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
 		}
 
+		for (i = 1; i <= SSL_List_Size(fireballs); i++) {
+			Snowball *e = SSL_List_Get(fireballs, i);
+			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
+		}
+
 		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
 			Collectible *e = SSL_List_Get(collectibles, i);
 			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
@@ -489,9 +553,11 @@ void play_game(Ld31_game *game) {
 			tick = 0;
 			uptime++;
 			if (SSL_List_Size(entities) < uptime / 10) {
-				int x = (rand() % 22 + 1) * tile_size;
-				int y = (rand() % 22 + 2) * tile_size;
+				int x = (rand() % 21 + 2) * tile_size;
+				int y = (rand() % 21 + 2) * tile_size;
 				entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
+				e->attack_speed = 2000;
+				e->last_shot = 0;
 				SSL_List_Add(entities, e);
 			}
 		}
