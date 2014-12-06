@@ -10,16 +10,16 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		int speedy = 0;
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
-			speedx -= 2.5 * delta;
+			speedx -= 2.3 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
-			speedx += 2.5 * delta;
+			speedx += 2.3 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
-			speedy += 2.5 * delta;
+			speedy += 2.3 * delta;
 		}
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
-			speedy -= 2.5 * delta;
+			speedy -= 2.3 * delta;
 		}
 
 		int x = e->x;
