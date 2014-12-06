@@ -8,6 +8,7 @@
 int tile_size;
 SSL_List *snowballs;
 SSL_List *collectibles;
+SSL_List *entities;
 long last_shot = 0;
 
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
@@ -158,7 +159,7 @@ static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
 		}
 	}
 
-	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, x, y);;
+	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, x, y);
 	return e;
 }
 
@@ -174,6 +175,7 @@ void play_game(Ld31_game *game) {
 	double fps = 0;
 	double tick = 0;
 	double s_fps = 0;
+	int uptime = 0;
 
 	Ld31_level *level = load_level(0, game);
 
@@ -190,6 +192,8 @@ void play_game(Ld31_game *game) {
 	collectibles = SSL_List_Create();
 	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 200,200);
 	SSL_List_Add(collectibles, c);
+
+	entities = SSL_List_Create();
 
 	int i = 0;
 	while (running) {
@@ -230,6 +234,10 @@ void play_game(Ld31_game *game) {
 		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
 		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
 
+		itoa(uptime, buf, 10);
+		SSL_Font_Draw(0, 50, 0 ,SDL_FLIP_NONE, "Uptime:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(105, 50, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
 			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
@@ -240,11 +248,23 @@ void play_game(Ld31_game *game) {
 			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
 		}
 
+		for (i = 1; i <= SSL_List_Size(entities); i++) {
+			entity *e = SSL_List_Get(entities, i);
+			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+		}
+
 		if (SDL_GetTicks() - timer > 1000) {
 			timer += 1000;
 			s_fps = fps;
 			fps = 0;
 			tick = 0;
+			uptime++;
+			if (SSL_List_Size(entities) < uptime / 10) {
+				int x = (rand() % 22 + 1) * tile_size;
+				int y = (rand() % 22 + 1) * tile_size;
+				entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
+				SSL_List_Add(entities, e);
+			}
 		}
 	}
 }

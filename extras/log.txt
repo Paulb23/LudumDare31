@@ -1,0 +1,6 @@
+Sat Dec 06 18:38:33 2014
+: Failed to create image texture! 
+Sat Dec 06 18:39:31 2014
+: Failed to create image texture! 
+Sat Dec 06 18:40:05 2014
+: Failed to create image texture! 
