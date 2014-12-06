@@ -38,26 +38,26 @@ static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
 static void handle_collision(Ld31_level *lvl, entity *e) {
 	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
 
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32) + 1, (e->y / 32), layer) == 1) {			// right
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32) + 1, (e->y / 32), layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {			// right
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {
 			e->x -= 1;
 		}
 	}
 
-	if (SSL_Tiled_Get_TileId(lvl->map, ((e->x + 32) / 32) - 1, (e->y / 32), layer) == 1) {			// left
-		while (SSL_Tiled_Get_TileId(lvl->map, ((e->x + 32) / 32) - 1, (e->y / 32), layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, ((e->x + tile_size) / tile_size) - 1, (e->y / tile_size), layer) == 1) {			// left
+		while (SSL_Tiled_Get_TileId(lvl->map, ((e->x + tile_size) / tile_size) - 1, (e->y / tile_size), layer) == 1) {
 			e->x += 1;
 		}
 	}
 
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y + 32)/ 32) + 1, layer) == 1) {			// down
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y + 32) / 32) + 1, layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y )/ tile_size) + 1, layer) == 1) {			// down
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y ) / tile_size) + 1, layer) == 1) {
 			e->y -= 1;
 		}
 	}
 
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y - 32) / 32), layer) == 1) {			// up
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), ((e->y - 32) / 32), layer) == 1) {
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {			// up
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {
 			e->y += 1;
 		}
 	}
