@@ -181,9 +181,6 @@ static void update_fireballs(float delta, int speed, entity *player, Ld31_game *
 		if (collides(e->entity->x, e->entity->y, 16,16, player->x, player->y, tile_size, tile_size)) {
 				player->health -= e->entity->damage;
 				collided = 1;
-				if (player->health <= 0) {
-					printf("Game Over!");
-				}
 		}
 
 		double radians = (e->entity->angle * PI) / 180;
@@ -284,7 +281,31 @@ static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
 	return e;
 }
 
-void play_game(Ld31_game *game) {
+
+static void game_over(int gamemode, SDL_Event event, Ld31_game *game, entity *player) {
+	int running = 1;
+
+	SSL_Interface *interface = SSL_Interface_Create();
+
+	while (running) {
+		SDL_RenderPresent(game->window->renderer);
+		SDL_RenderClear(game->window->renderer);
+
+		interface_draw(interface, game->window);
+
+		while(SDL_PollEvent(&event)) {
+
+			interface_update(interface, event);
+
+			if (event.type == SDL_QUIT) {
+				running = 0;
+				break;
+			}
+		}
+	}
+}
+
+void play_game(Ld31_game *game, int gamemode) {
 
 	int running = 1;
 	SDL_Event event;
@@ -375,6 +396,11 @@ void play_game(Ld31_game *game) {
 				update_entities(level, player, game, delta);
 			}
 
+			if (player->health <= 0) {
+				game_over(gamemode,event, game, player);
+				running = 0;
+			}
+
 			while(SDL_PollEvent(&event)) {
 				if (shop_open) {
 					interface_update(shop_inter ,event);
@@ -430,8 +456,10 @@ void play_game(Ld31_game *game) {
 					}
 				}
 
-				if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
-					shop_open = !shop_open;
+				if (gamemode == 0) {
+					if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
+						shop_open = !shop_open;
+					}
 				}
 
 				if (event.type == SDL_QUIT) {
@@ -458,9 +486,6 @@ void play_game(Ld31_game *game) {
 		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
 		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
-		itoa(uptime, buf, 10);
-		SSL_Font_Draw(0, 50, 0 ,SDL_FLIP_NONE, "Uptime:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
-		SSL_Font_Draw(105, 50, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
@@ -551,14 +576,20 @@ void play_game(Ld31_game *game) {
 			s_fps = fps;
 			fps = 0;
 			tick = 0;
-			uptime++;
-			if (SSL_List_Size(entities) < uptime / 10) {
-				int x = (rand() % 21 + 2) * tile_size;
-				int y = (rand() % 21 + 2) * tile_size;
-				entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
-				e->attack_speed = 2000;
-				e->last_shot = 0;
-				SSL_List_Add(entities, e);
+
+			if (!shop_open) {
+				uptime++;
+			}
+
+			if (gamemode == 0) {
+				if (SSL_List_Size(entities) < uptime / 10) {
+					int x = (rand() % 21 + 2) * tile_size;
+					int y = (rand() % 21 + 2) * tile_size;
+					entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
+					e->attack_speed = 2000;
+					e->last_shot = 0;
+					SSL_List_Add(entities, e);
+				}
 			}
 		}
 	}

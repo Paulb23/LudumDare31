@@ -5,5 +5,5 @@
 void start_game(Ld31_config *config) {
 
 	Ld31_game *game = ld31_loadgame(config);
-	play_game(game);
+	play_game(game, 0);
 }

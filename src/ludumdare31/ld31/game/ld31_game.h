@@ -9,6 +9,6 @@ typedef struct _ld31_level_ {
 } Ld31_level;
 
 Ld31_level *load_level(int level, Ld31_game *game);
-void play_game(Ld31_game *game);
+void play_game(Ld31_game *game, int gamemode);
 
 #endif
