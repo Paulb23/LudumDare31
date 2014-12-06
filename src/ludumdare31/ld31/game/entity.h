@@ -16,6 +16,11 @@ typedef struct _ld31_entity_ {
 	int angle;
 } entity;
 
+typedef struct _snowball_ {
+	entity *entity;
+	long deletion_time;
+} Snowball;
+
 entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y);
 
 #endif
