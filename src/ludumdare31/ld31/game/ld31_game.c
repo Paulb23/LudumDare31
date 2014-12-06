@@ -3,28 +3,44 @@
 #include "ld31_game.h"
 #include "math.h"
 
+#define PI 3.14159265359
+
 int tile_size;
 SSL_List *objects;
 
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
-		int speedx = 0;
-		int speedy = 0;
+		int x;
+		int y;
+
+		SDL_GetMouseState(&x,&y);
+
+		int deltaX = x - e->x ;
+		int deltaY = y - e->y;
+		int angleInDegrees = atan2(deltaX, -deltaY) * 180 / PI;
+		e->angle = angleInDegrees;
+
+		double radians = (e->angle * PI) / 180;
+		int speed = 3 * delta;
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
-			speedx -= 2.3 * delta;
-		}
-		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
-			speedx += 2.3 * delta;
-		}
-		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
-			speedy += 2.3 * delta;
-		}
-		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
-			speedy -= 2.3 * delta;
+			e->x -= speed * cos(radians);
+			e->y -= speed * sin(radians);
 		}
 
-		e->x += speedx * cos(e->angle);
-		e->y += speedy * sin(e->angle);
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
+			e->x += speed * cos(radians);
+			e->y += speed * sin(radians);
+		}
+
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
+			e->x += speed * sin(radians);
+			e->y -= speed * cos(radians);
+		}
+
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
+			e->x -= speed * sin(radians);
+			e->y += speed * cos(radians);
+		}
 }
 
 static int collides(entity *e1, entity *e2) {
@@ -107,7 +123,7 @@ void play_game(Ld31_game *game) {
 
 	Ld31_level *level = load_level(0, game);
 
-	entity *e = spawn_snowman(game, level);
+	entity *player = spawn_snowman(game, level);
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
@@ -120,21 +136,11 @@ void play_game(Ld31_game *game) {
 		SDL_RenderClear(game->window->renderer);
 
 		while (delta >= 1) {
-			snowman_movement(game, e, delta);
+			snowman_movement(game, player, delta);
 
-			handle_collision(level, e);
+			handle_collision(level, player);
 
 			while(SDL_PollEvent(&event)) {
-				if (event.type == SDL_MOUSEMOTION) {
-					int x = event.motion.x;
-					int y = event.motion.y;
-
-					int deltaX = x- e->x ;
-					int deltaY = y - e->y;
-					int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
-					e->angle = angleInDegrees;
-				}
-
 				if (event.type == SDL_QUIT) {
 					running = 0;
 					break;
@@ -148,7 +154,7 @@ void play_game(Ld31_game *game) {
 
 		SSL_Tiled_Draw_Map(level->map, 0, -32, game->window);
 
-		SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+		SSL_Image_Draw(player->image, player->x, player->y, player->angle, 0, SDL_FLIP_NONE, game->window);
 
 		char buf[3];
 		itoa(s_fps, buf, 10);
