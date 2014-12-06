@@ -233,11 +233,19 @@ void play_game(Ld31_game *game) {
 	SSL_Image_Button *projectile_speed_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,430,384,100), SSL_Image_Load("../extras/resources/sprites/projectile_speed_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, projectile_speed_buy);
 
+	SSL_Image_Button *health_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,540,384,100), SSL_Image_Load("../extras/resources/sprites/health_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, health_buy);
+
+	SSL_Image_Button *damage_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,650,384,100), SSL_Image_Load("../extras/resources/sprites/damage_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, damage_buy);
+
 
 	int speed_by_price = 10;
 	int attack_speed_by_price = 5;
 	int range_by_price = 15;
 	int projectile_speed_by_price = 5;
+	int health_by_price = 10;
+	int damage_by_price = 20;
 
 	int i = 0;
 	int shop_open = 0;
@@ -284,11 +292,27 @@ void play_game(Ld31_game *game) {
 
 					}
 
-					if (projectile_speed_buy->button_status->clicked && player->coins >= projectile_speed_by_price) {
+					if (projectile_speed_buy->button_status->clicked && player->coins >= health_by_price) {
+							player->coins -= health_by_price;
+							player->health += 10;
+							health_by_price *= 2;
+					} else if (range_buy->button_status->clicked && player->coins < health_by_price) {
+
+					}
+
+					if (health_buy->button_status->clicked && player->coins >= projectile_speed_by_price) {
 							player->coins -= projectile_speed_by_price;
 							player->projectle_speed += 0.2;
 							projectile_speed_by_price *= 2;
-					} else if (range_buy->button_status->clicked && player->coins < projectile_speed_by_price) {
+					} else if (health_buy->button_status->clicked && player->coins < projectile_speed_by_price) {
+
+					}
+
+					if (damage_buy->button_status->clicked && player->coins >= damage_by_price) {
+							player->coins -= damage_by_price;
+							player->damage += 5;
+							damage_by_price *= 2;
+					} else if (damage_buy->button_status->clicked && player->coins < damage_by_price) {
 
 					}
 				}
@@ -354,7 +378,13 @@ void play_game(Ld31_game *game) {
 			SSL_Font_Draw(250, 370, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 
 			itoa(projectile_speed_by_price, buf, 10);
-			SSL_Font_Draw(250, 470, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(250, 480, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(health_by_price, buf, 10);
+			SSL_Font_Draw(250, 590, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(damage_by_price, buf, 10);
+			SSL_Font_Draw(250, 695, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
