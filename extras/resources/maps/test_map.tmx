@@ -11,7 +11,7 @@
  </tileset>
  <layer name="map" width="24" height="24" opacity="0.9">
   <data encoding="base64" compression="zlib">
-   eJxjZ2BgYCcSs0AxsepBmBtJHyHMBsXEqucEYlYgZqQRZho1f9T8UfNHzR81f9T8UfMHxHweIGYmEnORoBamHgC2mQPT
+   eJxjZ2BgYB/imJFGeNT8UfNHzR81f9T8UfNHzR8482mJAUIABO0=
   </data>
  </layer>
  <layer name="spawn" width="24" height="24" visible="0">
