@@ -33,6 +33,34 @@ static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
 
 }
 
+static void handle_collision(Ld31_level *lvl, entity *e) {
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32) + 1, (e->y / 32), layer) == 1) {			// right
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32) + 1, (e->y / 32), layer) == 1) {
+			e->x -= 1;
+		}
+	}
+
+	if (SSL_Tiled_Get_TileId(lvl->map, ((e->x + 32) / 32) - 1, (e->y / 32), layer) == 1) {			// left
+		while (SSL_Tiled_Get_TileId(lvl->map, ((e->x + 32) / 32) - 1, (e->y / 32), layer) == 1) {
+			e->x += 1;
+		}
+	}
+
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) + 1, layer) == 1) {			// down
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) + 1, layer) == 1) {
+			e->y -= 1;
+		}
+	}
+
+	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) - 1, layer) == 1) {			// up
+		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / 32), (e->y / 32) - 1, layer) == 1) {
+			e->y += 1;
+		}
+	}
+}
+
 Ld31_level *load_level(int level, Ld31_game *game) {
 	Ld31_level *lvl = malloc(sizeof(Ld31_level));
 
@@ -56,8 +84,8 @@ void play_game(Ld31_game *game) {
 	double tick = 0;
 
 	Ld31_level *level = load_level(0, game);
-	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/player.png", 32, 32, game->window), up, 100, 100);
-	entity *e2 = create_entity("player", SSL_Image_Load("../extras/resources/sprites/player.png", 32, 32, game->window), up, 100, 100);
+	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, 100, 100);
+	entity *e2 = create_entity("player", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, 400, 400);
 
 	while (running) {
 		Uint32 now = SDL_GetTicks();					// get the current time
@@ -70,6 +98,9 @@ void play_game(Ld31_game *game) {
 		while (delta >= 1) {
 			snowman_movement(game, e, delta);
 			fireman_movment(game, e2, delta);
+
+			handle_collision(level, e);
+			handle_collision(level, e2);
 
 			while(SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) {
