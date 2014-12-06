@@ -17,7 +17,6 @@ typedef struct _ld31_entity_ {
 
 	float speed;
 	int projectle_speed;
-	int attack_damage;
 	int attack_speed;
 	int range;
 	int damage;

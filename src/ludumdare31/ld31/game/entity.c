@@ -14,7 +14,6 @@ entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y
 	entitys->y = y;
 	entitys->angle = 0;
 
-	entitys->attack_damage = 0;
 	entitys->attack_speed = 0;
 	entitys->projectle_speed = 0;
 	entitys->speed = 0;

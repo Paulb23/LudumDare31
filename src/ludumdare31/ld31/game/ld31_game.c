@@ -205,7 +205,6 @@ void play_game(Ld31_game *game) {
 	player->attack_speed = 500;
 	player->range = 2000;
 	player->projectle_speed = 4;
-	player->attack_damage = 0;
 	player->coins = 0;
 	player->health = 100;
 	player->damage = 50;
