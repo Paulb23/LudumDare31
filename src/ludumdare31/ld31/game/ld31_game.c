@@ -168,6 +168,7 @@ void play_game(Ld31_game *game) {
 	player->range = 2000;
 	player->projectle_speed = 4;
 	player->attack_damage = 0;
+	player->coins = 0;
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 

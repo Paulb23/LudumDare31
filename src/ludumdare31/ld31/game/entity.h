@@ -20,6 +20,7 @@ typedef struct _ld31_entity_ {
 	int attack_damage;
 	int attack_speed;
 	int range;
+	int coins;
 } entity;
 
 typedef struct _snowball_ {
