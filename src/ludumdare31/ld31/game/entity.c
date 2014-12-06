@@ -36,7 +36,7 @@ Collectible *create_collectible(char *name, SSL_Image *image, int x,  int y) {
 	entitys->x = x;
 	entitys->y = y;
 	entitys->angle = rand() % 360 + 0;
-	entitys->value = rand() % 10 + 0;
+	entitys->value = rand() % 10 + 1;
 
 	return entitys;
 }
