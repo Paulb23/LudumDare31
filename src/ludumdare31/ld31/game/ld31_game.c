@@ -160,8 +160,16 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 	}
 }
 
-static void update_entities(Ld31_level *lvl, Ld31_game *game, float delta) {
+static void move_entity(entity *e, Ld31_game *game, float delta) {
 
+}
+
+static void update_entities(Ld31_level *lvl, Ld31_game *game, float delta) {
+		int i;
+		for (i = 1; i <= SSL_List_Size(entities); i++) {
+			entity *e = SSL_List_Get(entities, i);
+			move_entity(e, game, delta);
+		}
 }
 
 Ld31_level *load_level(int level, Ld31_game *game) {
@@ -283,6 +291,8 @@ void play_game(Ld31_game *game) {
 			if (!shop_open) {
 				update_snowman(game, player, delta);
 				handle_collision(level, player);
+
+				update_entities(level, game, delta);
 			}
 
 			while(SDL_PollEvent(&event)) {
@@ -459,7 +469,7 @@ void play_game(Ld31_game *game) {
 			uptime++;
 			if (SSL_List_Size(entities) < uptime / 10) {
 				int x = (rand() % 22 + 1) * tile_size;
-				int y = (rand() % 22 + 1) * tile_size;
+				int y = (rand() % 22 + 2) * tile_size;
 				entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 				SSL_List_Add(entities, e);
 			}
