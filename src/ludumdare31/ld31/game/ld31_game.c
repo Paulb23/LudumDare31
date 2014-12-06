@@ -86,10 +86,13 @@ void play_game(Ld31_game *game) {
 	float delta = 0;
 	double fps = 0;
 	double tick = 0;
+	double s_fps = 0;
 
 	Ld31_level *level = load_level(0, game);
 	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, 100, 100);
 	entity *e2 = create_entity("player", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, 400, 400);
+
+	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
 	while (running) {
 		Uint32 now = SDL_GetTicks();					// get the current time
@@ -122,8 +125,14 @@ void play_game(Ld31_game *game) {
 		SSL_Image_Draw(e->image, e->x, e->y, 0, 0, SDL_FLIP_NONE, game->window);
 		SSL_Image_Draw(e2->image, e2->x, e2->y, 0, 0, SDL_FLIP_NONE, game->window);
 
+		char buf[3];
+		itoa(s_fps, buf, 10);
+		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(55, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+
 		if (SDL_GetTicks() - timer > 1000) {
 			timer += 1000;
+			s_fps = fps;
 			fps = 0;
 			tick = 0;
 		}
