@@ -292,19 +292,19 @@ void play_game(Ld31_game *game) {
 
 					}
 
-					if (projectile_speed_buy->button_status->clicked && player->coins >= health_by_price) {
-							player->coins -= health_by_price;
-							player->health += 10;
-							health_by_price *= 2;
-					} else if (range_buy->button_status->clicked && player->coins < health_by_price) {
-
-					}
-
-					if (health_buy->button_status->clicked && player->coins >= projectile_speed_by_price) {
+					if (projectile_speed_buy->button_status->clicked && player->coins >= projectile_speed_by_price) {
 							player->coins -= projectile_speed_by_price;
 							player->projectle_speed += 0.2;
 							projectile_speed_by_price *= 2;
-					} else if (health_buy->button_status->clicked && player->coins < projectile_speed_by_price) {
+					} else if (range_buy->button_status->clicked && player->coins < projectile_speed_by_price) {
+
+					}
+
+					if (health_buy->button_status->clicked && player->coins >= health_by_price) {
+							player->coins -= health_by_price;
+							player->health += 10;
+							health_by_price *= 2;
+					} else if (health_buy->button_status->clicked && player->coins < health_by_price) {
 
 					}
 
