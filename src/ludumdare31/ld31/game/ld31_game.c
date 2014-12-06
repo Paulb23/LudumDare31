@@ -10,6 +10,7 @@ SSL_List *snowballs;
 SSL_List *collectibles;
 SSL_List *entities;
 long last_shot = 0;
+int total_gold_collected;
 
 static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
   return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
@@ -142,6 +143,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 		if (collides(e->x, e->y, 32, 32, e1->x, e1->y, 16,16)) {
 			if (strcmp(e1->name, "coin") == 0) {
 				e->coins += e1->value;
+				total_gold_collected += e1->value;
 			}
 
 			SSL_Image_Destroy(e1->image);
@@ -211,6 +213,7 @@ void play_game(Ld31_game *game) {
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 	SSL_Font *calibri = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 44);
+	SSL_Font *calibri_small = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 22);
 
 	collectibles = SSL_List_Create();
 	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 200,200);
@@ -219,6 +222,7 @@ void play_game(Ld31_game *game) {
 	entities = SSL_List_Create();
 
 	SSL_Image *stats_back = SSL_Image_Load("../extras/resources/sprites/stats_back.png", 384, 768, game->window);
+	SSL_Image *gold_icon = SSL_Image_Load("../extras/resources/sprites/gold_icon.png", 32, 32, game->window);
 
 	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
 	SSL_Interface *shop_inter = SSL_Interface_Create();
@@ -248,6 +252,7 @@ void play_game(Ld31_game *game) {
 	int projectile_speed_by_price = 5;
 	int health_by_price = 10;
 	int damage_by_price = 20;
+	total_gold_collected = 0;
 
 	int i = 0;
 	int shop_open = 0;
@@ -388,6 +393,20 @@ void play_game(Ld31_game *game) {
 
 			itoa(damage_by_price, buf, 10);
 			SSL_Font_Draw(250, 695, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+
+			SSL_Image_Draw(gold_icon, 410, 255, 0, 0, SDL_FLIP_NONE, game->window);
+
+			itoa(player->coins, buf, 10);
+			SSL_Font_Draw(450, 275, 0 ,SDL_FLIP_NONE, "Current: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(540, 277, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(total_gold_collected, buf, 10);
+			SSL_Font_Draw(450, 300, 0 ,SDL_FLIP_NONE, "Total Collected: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(600, 302, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(total_gold_collected, buf, 10);
+			SSL_Font_Draw(450, 325, 0 ,SDL_FLIP_NONE, "Collected That Round: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(655, 327, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
