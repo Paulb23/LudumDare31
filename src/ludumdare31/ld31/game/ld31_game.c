@@ -54,7 +54,7 @@ static void update_snowballs(float delta) {
 		e->entity->x += speed * sin(radians);
 		e->entity->y -= speed * cos(radians);
 
-		if (SDL_GetTicks() > e->deletion_time) {
+		if (SDL_GetTicks() > e->deletion_time || e->entity->x > 768 || e->entity->y > 768 || e->entity->x < 0 || e->entity->y < 0) {
 			SSL_List_Remove(snowballs, e);
 			SSL_Image_Destroy(e->entity->image);
 			free(e->entity);
@@ -66,10 +66,11 @@ static void update_snowballs(float delta) {
 
 static void snowman_shoot(Ld31_game *game, int x, int y, int angle) {
 	Snowball *e = malloc(sizeof(Snowball));
-	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 32, 32, game->window), up, x, y);
+	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 16, 16, game->window), up, x, y);
 	e->entity->angle = angle;
-	e->deletion_time = SDL_GetTicks() + 1000;
+	e->deletion_time = SDL_GetTicks() + 4000;
 	SSL_List_Add(snowballs, e);
+	last_shot = SDL_GetTicks();
 }
 
 static void update_snowman(Ld31_game *game, entity *e, float delta) {
