@@ -338,16 +338,16 @@ void play_game(Ld31_game *game) {
 
 		char buf[3];
 		itoa(s_fps, buf, 10);
-		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
-		SSL_Font_Draw(75, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(75, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
 		itoa(player->coins, buf, 10);
-		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
-		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
 		itoa(uptime, buf, 10);
-		SSL_Font_Draw(0, 50, 0 ,SDL_FLIP_NONE, "Uptime:", debug_font, SSL_Color_Create(0,0,0,0), game->window);
-		SSL_Font_Draw(105, 50, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(0,0,0,0), game->window);
+		SSL_Font_Draw(0, 50, 0 ,SDL_FLIP_NONE, "Uptime:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(105, 50, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
