@@ -6,6 +6,14 @@
 #include "SDL2/SDL_Image.h"
 #include "SDL2/SDL_Mixer.h"
 
+typedef struct _ld31_keys_ {
+	char *up;
+	char *down;
+	char *left;
+	char *right;
+} ld31_keys;
+
+
 typedef struct _LD31_Config_ {
 	char *title;
 	int window_width;
@@ -13,8 +21,9 @@ typedef struct _LD31_Config_ {
 	int window_res_width;
 	int window_res_height;
 	int frames_per_second;
+	ld31_keys snowman_keys;
+	ld31_keys fireman_keys;
 } Ld31_config;
-
 
 typedef struct _LD31_Game_ {
 	Ld31_config *config;

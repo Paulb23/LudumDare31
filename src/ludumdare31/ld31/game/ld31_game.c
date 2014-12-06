@@ -2,6 +2,36 @@
 #include "entity.h"
 #include "ld31_game.h"
 
+static void snowman_movement(Ld31_game *game, entity *e, float delta) {
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
+			e->x -= 2 * delta;
+		}
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
+				e->x += 2 * delta;
+		}
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
+				e->y += 2 * delta;
+		}
+		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
+				e->y -= 2 * delta;
+		}
+}
+
+static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
+	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.left)) {
+		e->x -= 2 * delta;
+	}
+	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.right)) {
+			e->x += 2 * delta;
+	}
+	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.down)) {
+			e->y += 2 * delta;
+	}
+	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.up)) {
+			e->y -= 2 * delta;
+	}
+
+}
 
 Ld31_level *load_level(int level, Ld31_game *game) {
 	Ld31_level *lvl = malloc(sizeof(Ld31_level));
@@ -22,8 +52,8 @@ void play_game(Ld31_game *game) {
 	const double ns = 1000.0 / MAX_TICKS_PER_SECOND;
 	Uint32 timer = SDL_GetTicks();
 	float delta = 0;
-	double fps = 0;	/**< internal fps counter */
-	double tick = 0;	/**< internal tick counter */
+	double fps = 0;
+	double tick = 0;
 
 	Ld31_level *level = load_level(0, game);
 	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/player.png", 32, 32, game->window), up, 100, 100);
@@ -38,32 +68,8 @@ void play_game(Ld31_game *game) {
 		SDL_RenderClear(game->window->renderer);
 
 		while (delta >= 1) {
-
-			if (SSL_Keybord_Keyname_Down("_a")) {
-				e->x -= 1 * delta;
-			}
-			if (SSL_Keybord_Keyname_Down("_d")) {
-					e->x += 1 * delta;
-				}
-			if (SSL_Keybord_Keyname_Down("_s")) {
-					e->y += 1 * delta;
-				}
-			if (SSL_Keybord_Keyname_Down("_w")) {
-					e->y -= 1 * delta;
-				}
-
-			if (SSL_Keybord_Keyname_Down("_left")) {
-				e2->x -= 1 * delta;
-			}
-			if (SSL_Keybord_Keyname_Down("_right")) {
-					e2->x += 1 * delta;
-				}
-			if (SSL_Keybord_Keyname_Down("_down")) {
-					e2->y += 1 * delta;
-				}
-			if (SSL_Keybord_Keyname_Down("_up")) {
-					e2->y -= 1 * delta;
-				}
+			snowman_movement(game, e, delta);
+			fireman_movment(game, e2, delta);
 
 			while(SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) {
@@ -86,9 +92,6 @@ void play_game(Ld31_game *game) {
 			fps = 0;
 			tick = 0;
 		}
-
-
 	}
-
 }
 
