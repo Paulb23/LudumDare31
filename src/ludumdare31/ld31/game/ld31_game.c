@@ -366,6 +366,22 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			}
 		}
 	}
+
+	SSL_Font_Destroy(calibri);
+	free(calibri);
+	SSL_Font_Destroy(calibri_small);
+	free(calibri_small);
+	SSL_Image_Destroy(time_alive_back);
+	free(time_alive_back);
+	SSL_Image_Destroy(gold_icon);
+	free(gold_icon);
+	SSL_Image_Destroy(skull_icon);
+	free(skull_icon);
+	SSL_Image_Destroy(background);
+	free(background);
+	SSL_Interface_Destroy(interface);
+	free(interface);
+	free(menu_button);
 }
 
 void play_game(Ld31_game *game, int gamemode) {
