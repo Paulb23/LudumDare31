@@ -35,33 +35,8 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		e->angle = angleInDegrees;
 }
 
-static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
-	int speedx = 0;
-	int speedy = 0;
-
-	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.left)) {
-		speedx -= 2.5 * delta;
-	}
-	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.right)) {
-		speedx += 2 * delta;
-	}
-	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.down)) {
-		speedy += 2 * delta;
-	}
-	if (SSL_Keybord_Keyname_Down(game->config->fireman_keys.up)) {
-		speedy -= 2 * delta;
-	}
-
-	int x = e->x;
-	int y = e->y;
-
-	e->x += speedx;
-	e->y += speedy;
-
-	int deltaX = e->x - x;
-	int deltaY = e->y - y;
-	int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
-	e->angle = angleInDegrees;
+static int collides(entity *e1, entity *e2) {
+  return (e1->x < e2->x + tile_size && e1->x + tile_size > e2->x && e1->y < e2->y + tile_size && e1->y + tile_size > e2->y) ? 1: 0 ;
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
@@ -91,10 +66,6 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 			e->y += 1;
 		}
 	}
-
-	// objects
-
-
 }
 
 Ld31_level *load_level(int level, Ld31_game *game) {
@@ -117,7 +88,7 @@ static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
 
 	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
 		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
-			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) == 2) {
+			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) == 1) {
 				x = i * tile_size;
 				y = j * tile_size;
 				break;
@@ -127,53 +98,6 @@ static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
 
 	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, x, y);;
 	return e;
-}
-
-static entity *spawn_fireman(Ld31_game *game, Ld31_level *lvl) {
-	int  x = 0;
-	int y = 0;
-	int i, j;
-	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "spawn");
-
-	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
-		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
-			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) == 1) {
-				x = i * tile_size;
-				y = j * tile_size;
-				break;
-			}
-		}
-	}
-
-	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x, y);
-	return e;
-}
-
-static void spawn_objects(Ld31_game *game, Ld31_level *lvl) {
-	objects = SSL_List_Create();
-	int  x = 0;
-	int y = 0;
-	int i, j;
-	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "spawn");
-
-	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
-		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
-			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) > 2) {
-				x = i * tile_size;
-				y = j * tile_size;
-				entity *e;
-
-				switch (SSL_Tiled_Get_TileId(lvl->map, i , j, layer)) {
-					case 3: {
-						e = create_entity("box", SSL_Image_Load("../extras/resources/sprites/box.png", 32, 32, game->window), up, x, y);
-						break;
-					}
-				}
-
-				SSL_List_Add(objects, e);
-			}
-		}
-	}
 }
 
 void play_game(Ld31_game *game) {
@@ -192,8 +116,6 @@ void play_game(Ld31_game *game) {
 	Ld31_level *level = load_level(0, game);
 
 	entity *e = spawn_snowman(game, level);
-	entity *e2 = spawn_fireman(game, level);
-	spawn_objects(game, level);
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
@@ -207,10 +129,8 @@ void play_game(Ld31_game *game) {
 
 		while (delta >= 1) {
 			snowman_movement(game, e, delta);
-			fireman_movment(game, e2, delta);
 
 			handle_collision(level, e);
-			handle_collision(level, e2);
 
 			while(SDL_PollEvent(&event)) {
 				if (event.type == SDL_QUIT) {
@@ -227,13 +147,6 @@ void play_game(Ld31_game *game) {
 		SSL_Tiled_Draw_Map(level->map, 0, -32, game->window);
 
 		SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
-		SSL_Image_Draw(e2->image, e2->x, e2->y, e2->angle, 0, SDL_FLIP_NONE, game->window);
-
-		int i;
-		for (i = 1; i <= SSL_List_Size(objects); i++) {
-			entity *q = SSL_List_Get(objects, i);
-			SSL_Image_Draw(q->image, q->x, q->y, q->angle, 0, SDL_FLIP_NONE, game->window);
-		}
 
 		char buf[3];
 		itoa(s_fps, buf, 10);

@@ -33,6 +33,8 @@ Ld31_config *ld31_loadConfig() {
 	config->fireman_keys.left = iniparser_getstring(dict, "keys:fire_left", "_left");
 	config->fireman_keys.right = iniparser_getstring(dict, "keys:fire_right", "_right");
 
+	config->restart = iniparser_getstring(dict, "keys:restart ", "_r");
+
 
 	return config;
 }

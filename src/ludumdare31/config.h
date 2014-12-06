@@ -23,6 +23,7 @@ typedef struct _LD31_Config_ {
 	int frames_per_second;
 	ld31_keys snowman_keys;
 	ld31_keys fireman_keys;
+	char *restart;
 } Ld31_config;
 
 typedef struct _LD31_Game_ {

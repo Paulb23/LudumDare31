@@ -7,29 +7,21 @@
   <image source="../tiles/collision.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="27" name="spawn" tilewidth="32" tileheight="32">
-  <image source="../tiles/spawn.png" width="96" height="32"/>
- </tileset>
- <tileset firstgid="30" name="triggers" tilewidth="32" tileheight="32">
-  <image source="../tiles/triggers.png" width="64" height="32"/>
+  <image source="../tiles/spawn.png" width="32" height="32"/>
  </tileset>
  <layer name="map" width="24" height="24" opacity="0.9">
   <data encoding="base64" compression="zlib">
-   eJxjZ2BgYKch5gZiFiIxJxnqWYGYkUjMBFXPQSRmGjV/1PxR80fNHzV/1PxR8wfEfB4gZiYSc5GhHgA8hgoR
-  </data>
- </layer>
- <layer name="triggers" width="24" height="24" visible="0">
-  <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAfBkJAAAB
+   eJxjZ2BgYCcSs0AxsepBmBtJHyHMBsXEqucEYlYgZqQRZho1f9T8UfNHzR81f9T8UfMHxHweIGYmEnORoBamHgC2mQPT
   </data>
  </layer>
  <layer name="spawn" width="24" height="24" visible="0">
   <data encoding="base64" compression="zlib">
-   eJxjYBgF9AbSA+2AUTAogOxAO2AUjIJRMCKAzEA7YJACAJNnAFU=
+   eJxjYBgFo2AUjIJRMApGwXAF0gPtgEEKACaIABw=
   </data>
  </layer>
  <layer name="collsion" width="24" height="24" visible="0">
   <data encoding="base64" compression="zlib">
-   eJyTYmBgkKIxJhaMqh9VP6p+VP2o+lH1o+pH1dO6XQLCAFBCDdE=
+   eJyTYmBgkKIxphUYNX/U/FHzR80fNX/U/FHzh6/5tMQAKiYJWQ==
   </data>
  </layer>
 </map>
