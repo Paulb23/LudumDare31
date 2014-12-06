@@ -218,6 +218,8 @@ void play_game(Ld31_game *game) {
 
 	entities = SSL_List_Create();
 
+	SSL_Image *stats_back = SSL_Image_Load("../extras/resources/sprites/stats_back.png", 384, 768, game->window);
+
 	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
 	SSL_Interface *shop_inter = SSL_Interface_Create();
 
@@ -366,6 +368,7 @@ void play_game(Ld31_game *game) {
 
 		if (shop_open) {
 			SSL_Image_Draw(shop_back, 0, 0, 0, 0, SDL_FLIP_NONE, game->window);
+			SSL_Image_Draw(stats_back, 370, 0, 0, 0, SDL_FLIP_NONE, game->window);
 			interface_draw(shop_inter, game->window);
 
 			itoa(speed_by_price, buf, 10);
