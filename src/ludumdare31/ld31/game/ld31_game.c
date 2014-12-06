@@ -675,5 +675,37 @@ void play_game(Ld31_game *game, int gamemode) {
 			}
 		}
 	}
+
+	SSL_List_Destroy(snowballs);
+	free(snowballs);
+	SSL_List_Destroy(fireballs);
+	free(fireballs);
+	SSL_List_Destroy(collectibles);
+	free(collectibles);
+	SSL_List_Destroy(entities);
+	free(entities);
+	free(player);
+	SSL_Font_Destroy(debug_font);
+	free(debug_font);
+	SSL_Font_Destroy(calibri);
+	free(calibri);
+	SSL_Font_Destroy(calibri_small);
+	free(calibri_small);
+
+	SSL_Image_Destroy(stats_back);
+	free(stats_back);
+	SSL_Image_Destroy(gold_icon);
+	free(gold_icon);
+	SSL_Image_Destroy(skull_icon);
+	free(gold_icon);
+	SSL_Image_Destroy(shop_back);
+	free(shop_back);
+	SSL_Interface_Destroy(shop_inter);
+	free(speed_buy);
+	free(attack_speed_buy);
+	free(range_buy);
+	free(projectile_speed_buy);
+	free(health_buy);
+	free(damage_buy);
 }
 
