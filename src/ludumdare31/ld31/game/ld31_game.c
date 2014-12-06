@@ -282,20 +282,83 @@ static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
 }
 
 
-static void game_over(int gamemode, SDL_Event event, Ld31_game *game, entity *player) {
+static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game, entity *player) {
 	int running = 1;
 
+	SSL_Font *calibri = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 44);
+	SSL_Font *calibri_small = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 22);
+
+	SSL_Image *time_alive_back = SSL_Image_Load("../extras/resources/sprites/time_alive_back.png", 312, 501, game->window);
+	SSL_Image *gold_icon = SSL_Image_Load("../extras/resources/sprites/gold_icon.png", 32, 32, game->window);
+	SSL_Image *skull_icon = SSL_Image_Load("../extras/resources/sprites/skull_icon.png", 32, 32, game->window);
+	SSL_Image *background = SSL_Image_Load("../extras/resources/sprites/game_over_back.png", 768, 768, game->window);
 	SSL_Interface *interface = SSL_Interface_Create();
+
+	SSL_Image_Button *menu_button = SSL_Image_Button_Create(SSL_Rectangle_Create(400,650,384,100), SSL_Image_Load("../extras/resources/sprites/menu_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(interface, menu_button);
+
 
 	while (running) {
 		SDL_RenderPresent(game->window->renderer);
 		SDL_RenderClear(game->window->renderer);
 
+		SSL_Image_Draw(background, 0, 0, 0, 0, SDL_FLIP_NONE, game->window);
 		interface_draw(interface, game->window);
 
+		if (gamemode == 0) {
+			SSL_Image_Draw(time_alive_back, 20, 155, 0, 0, SDL_FLIP_NONE, game->window);
+
+			SSL_Image_Draw(gold_icon, 410, 255, 0, 0, SDL_FLIP_NONE, game->window);
+
+			char buf[3];
+			itoa(player->coins, buf, 10);
+			SSL_Font_Draw(450, 275, 0 ,SDL_FLIP_NONE, "Current: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(540, 277, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(total_gold_collected, buf, 10);
+			SSL_Font_Draw(450, 300, 0 ,SDL_FLIP_NONE, "Total Collected: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(600, 302, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(total_gold_collected, buf, 10);
+			SSL_Font_Draw(450, 325, 0 ,SDL_FLIP_NONE, "Collected That Round: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(655, 327, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			SSL_Image_Draw(skull_icon, 410, 360, 0, 0, SDL_FLIP_NONE, game->window);
+
+			itoa((player->speed + speed_upgrades), buf, 10);
+			SSL_Font_Draw(450, 385, 0 ,SDL_FLIP_NONE, "Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(520, 387, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->attack_speed, buf, 10);
+			SSL_Font_Draw(450, 410, 0 ,SDL_FLIP_NONE, "Attack Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(582, 410, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->range, buf, 10);
+			SSL_Font_Draw(450, 435, 0 ,SDL_FLIP_NONE, "Range: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(520, 435, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa((player->projectle_speed + proj_upgrades), buf, 10);
+			SSL_Font_Draw(450, 460, 0 ,SDL_FLIP_NONE, "Proj. Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(565, 460, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->health, buf, 10);
+			SSL_Font_Draw(450, 485, 0 ,SDL_FLIP_NONE, "Health: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(525, 487, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->damage, buf, 10);
+			SSL_Font_Draw(450, 510, 0 ,SDL_FLIP_NONE, "Damage: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(540, 510, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(uptime, buf, 10);
+			SSL_Font_Draw(160, 400, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+		}
 		while(SDL_PollEvent(&event)) {
 
 			interface_update(interface, event);
+
+			if (menu_button->button_status->clicked) {
+				running = 0;
+			}
 
 			if (event.type == SDL_QUIT) {
 				running = 0;
@@ -397,7 +460,7 @@ void play_game(Ld31_game *game, int gamemode) {
 			}
 
 			if (player->health <= 0) {
-				game_over(gamemode,event, game, player);
+				game_over(gamemode, uptime, event, game, player);
 				running = 0;
 			}
 
@@ -459,6 +522,9 @@ void play_game(Ld31_game *game, int gamemode) {
 				if (gamemode == 0) {
 					if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
 						shop_open = !shop_open;
+					}
+					if (SSL_Keybord_Keyname_Pressed("_l", event)) {
+							player->health = 0;
 					}
 				}
 
