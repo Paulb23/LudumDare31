@@ -21,7 +21,7 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		e->angle = angleInDegrees;
 
 		double radians = (e->angle * PI) / 180;
-		int speed = 3 * delta;
+		int speed = e->speed * delta;
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
 			e->x -= speed * cos(radians);
@@ -44,8 +44,8 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		}
 }
 
-static void update_snowballs(float delta) {
-	int speed = 3 * delta;
+static void update_snowballs(float delta, int speed) {
+	speed *= delta;
 	int i;
 	for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 		Snowball *e = SSL_List_Get(snowballs, i);
@@ -64,21 +64,21 @@ static void update_snowballs(float delta) {
 	}
 }
 
-static void snowman_shoot(Ld31_game *game, int x, int y, int angle) {
+static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed) {
 	Snowball *e = malloc(sizeof(Snowball));
 	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 16, 16, game->window), up, x, y);
 	e->entity->angle = angle;
-	e->deletion_time = SDL_GetTicks() + 4000;
+	e->deletion_time = SDL_GetTicks() + prospeed;
 	SSL_List_Add(snowballs, e);
 	last_shot = SDL_GetTicks();
 }
 
 static void update_snowman(Ld31_game *game, entity *e, float delta) {
 	snowman_movement(game, e, delta);
-	if (SSL_Mouse_Left_Down() && SDL_GetTicks() >= last_shot + 100) {
-		snowman_shoot(game, e->x, e->y, e->angle);
+	if (SSL_Mouse_Left_Down() && SDL_GetTicks() >= last_shot + e->attack_speed) {
+		snowman_shoot(game, e->x, e->y, e->angle, e->range);
 	}
-	update_snowballs(delta);
+	update_snowballs(delta, e->projectle_speed);
 }
 
 static int collides(entity *e1, entity *e2) {
@@ -163,6 +163,11 @@ void play_game(Ld31_game *game) {
 	Ld31_level *level = load_level(0, game);
 
 	entity *player = spawn_snowman(game, level);
+	player->speed = 2;
+	player->attack_speed = 100;
+	player->range = 1000;
+	player->projectle_speed = 2;
+	player->attack_damage = 0;
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 

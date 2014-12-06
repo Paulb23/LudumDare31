@@ -14,6 +14,12 @@ typedef struct _ld31_entity_ {
 	int x;
 	int y;
 	int angle;
+
+	int speed;
+	int projectle_speed;
+	int attack_damage;
+	int attack_speed;
+	int range;
 } entity;
 
 typedef struct _snowball_ {
