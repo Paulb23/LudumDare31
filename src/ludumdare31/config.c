@@ -28,14 +28,6 @@ Ld31_config *ld31_loadConfig() {
 	config->snowman_keys.left = iniparser_getstring(dict, "keys:snow_left", "_a");
 	config->snowman_keys.right = iniparser_getstring(dict, "keys:snow_right", "_d");
 
-	config->fireman_keys.up = iniparser_getstring(dict, "keys:fire_up", "_up");
-	config->fireman_keys.down = iniparser_getstring(dict, "keys:fire_down", "_down");
-	config->fireman_keys.left = iniparser_getstring(dict, "keys:fire_left", "_left");
-	config->fireman_keys.right = iniparser_getstring(dict, "keys:fire_right", "_right");
-
-	config->restart = iniparser_getstring(dict, "keys:restart ", "_r");
-
-
 	return config;
 }
 
