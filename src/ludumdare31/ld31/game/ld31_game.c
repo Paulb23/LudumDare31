@@ -225,7 +225,12 @@ void play_game(Ld31_game *game) {
 	SSL_Image_Button *speed_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,100,384,100), SSL_Image_Load("../extras/resources/sprites/speed_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, speed_buy);
 
+	SSL_Image_Button *attack_speed_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,210,384,100), SSL_Image_Load("../extras/resources/sprites/attack_speed_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, attack_speed_buy);
+
+
 	int speed_by_price = 10;
+	int attack_speed_by_price = 5;
 
 	int i = 0;
 	int shop_open = 0;
@@ -249,10 +254,18 @@ void play_game(Ld31_game *game) {
 					interface_update(shop_inter ,event);
 
 					if (speed_buy->button_status->clicked && player->coins >= speed_by_price) {
-						player->coins -= 10;
+						player->coins -= speed_by_price;
 						player->speed += 0.2;
 						speed_by_price *= 2;
-					} else if (speed_buy->button_status->clicked && player->coins < 10) {
+					} else if (speed_buy->button_status->clicked && player->coins < speed_by_price) {
+
+					}
+
+					if (attack_speed_buy->button_status->clicked && player->coins >= attack_speed_by_price) {
+						player->coins -= attack_speed_by_price;
+						player->attack_speed += 10;
+						attack_speed_by_price *= 2;
+					} else if (attack_speed_buy->button_status->clicked && player->coins < attack_speed_by_price) {
 
 					}
 				}
@@ -310,6 +323,9 @@ void play_game(Ld31_game *game) {
 
 			itoa(speed_by_price, buf, 10);
 			SSL_Font_Draw(250, 145, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(attack_speed_by_price, buf, 10);
+			SSL_Font_Draw(250, 255, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
