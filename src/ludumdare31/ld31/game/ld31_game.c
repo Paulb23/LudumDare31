@@ -23,16 +23,8 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 			speedy -= 2.3 * delta;
 		}
 
-		int x = e->x;
-		int y = e->y;
-
-		e->x += speedx;
-		e->y += speedy;
-
-		int deltaX = e->x - x;
-		int deltaY = e->y - y;
-		int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
-		e->angle = angleInDegrees;
+		e->x += speedx * cos(e->angle);
+		e->y += speedy * sin(e->angle);
 }
 
 static int collides(entity *e1, entity *e2) {
@@ -133,6 +125,16 @@ void play_game(Ld31_game *game) {
 			handle_collision(level, e);
 
 			while(SDL_PollEvent(&event)) {
+				if (event.type == SDL_MOUSEMOTION) {
+					int x = event.motion.x;
+					int y = event.motion.y;
+
+					int deltaX = x- e->x ;
+					int deltaY = y - e->y;
+					int angleInDegrees = atan2(deltaX, -deltaY) * 180 / 3.142;
+					e->angle = angleInDegrees;
+				}
+
 				if (event.type == SDL_QUIT) {
 					running = 0;
 					break;
