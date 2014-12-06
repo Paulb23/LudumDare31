@@ -10,6 +10,10 @@ SSL_List *snowballs;
 SSL_List *collectibles;
 SSL_List *entities;
 long last_shot = 0;
+
+
+int speed_upgrades = 0;
+int proj_upgrades = 0;
 int total_gold_collected;
 
 static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
@@ -223,6 +227,7 @@ void play_game(Ld31_game *game) {
 
 	SSL_Image *stats_back = SSL_Image_Load("../extras/resources/sprites/stats_back.png", 384, 768, game->window);
 	SSL_Image *gold_icon = SSL_Image_Load("../extras/resources/sprites/gold_icon.png", 32, 32, game->window);
+	SSL_Image *skull_icon = SSL_Image_Load("../extras/resources/sprites/skull_icon.png", 32, 32, game->window);
 
 	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
 	SSL_Interface *shop_inter = SSL_Interface_Create();
@@ -253,6 +258,8 @@ void play_game(Ld31_game *game) {
 	int health_by_price = 10;
 	int damage_by_price = 20;
 	total_gold_collected = 0;
+	speed_upgrades = 0;
+	proj_upgrades = 0;
 
 	int i = 0;
 	int shop_open = 0;
@@ -279,6 +286,7 @@ void play_game(Ld31_game *game) {
 						player->coins -= speed_by_price;
 						player->speed += 0.2;
 						speed_by_price *= 2;
+						speed_upgrades++;
 					} else if (speed_buy->button_status->clicked && player->coins < speed_by_price) {
 
 					}
@@ -303,6 +311,7 @@ void play_game(Ld31_game *game) {
 							player->coins -= projectile_speed_by_price;
 							player->projectle_speed += 0.2;
 							projectile_speed_by_price *= 2;
+							proj_upgrades++;
 					} else if (range_buy->button_status->clicked && player->coins < projectile_speed_by_price) {
 
 					}
@@ -407,6 +416,32 @@ void play_game(Ld31_game *game) {
 			itoa(total_gold_collected, buf, 10);
 			SSL_Font_Draw(450, 325, 0 ,SDL_FLIP_NONE, "Collected That Round: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(655, 327, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			SSL_Image_Draw(skull_icon, 410, 360, 0, 0, SDL_FLIP_NONE, game->window);
+
+			itoa((player->speed + speed_upgrades), buf, 10);
+			SSL_Font_Draw(450, 385, 0 ,SDL_FLIP_NONE, "Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(520, 387, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->attack_speed, buf, 10);
+			SSL_Font_Draw(450, 410, 0 ,SDL_FLIP_NONE, "Attack Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(582, 410, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->range, buf, 10);
+			SSL_Font_Draw(450, 435, 0 ,SDL_FLIP_NONE, "Range: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(520, 435, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa((player->projectle_speed + proj_upgrades), buf, 10);
+			SSL_Font_Draw(450, 460, 0 ,SDL_FLIP_NONE, "Proj. Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(565, 460, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->health, buf, 10);
+			SSL_Font_Draw(450, 485, 0 ,SDL_FLIP_NONE, "Health: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(525, 487, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			itoa(player->damage, buf, 10);
+			SSL_Font_Draw(450, 510, 0 ,SDL_FLIP_NONE, "Damage: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(540, 510, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
