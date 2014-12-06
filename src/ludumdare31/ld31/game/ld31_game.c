@@ -4,6 +4,7 @@
 #include "math.h"
 
 int tile_size;
+SSL_List *objects;
 
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		int speedx = 0;
@@ -66,6 +67,7 @@ static void fireman_movment(Ld31_game *game, entity *e, float delta)  {
 static void handle_collision(Ld31_level *lvl, entity *e) {
 	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
 
+	// walls
 	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {			// right
 		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {
 			e->x -= 1;
@@ -89,6 +91,10 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 			e->y += 1;
 		}
 	}
+
+	// objects
+
+
 }
 
 Ld31_level *load_level(int level, Ld31_game *game) {
@@ -102,6 +108,73 @@ Ld31_level *load_level(int level, Ld31_game *game) {
 	return lvl;
 }
 
+
+static entity *spawn_snowman(Ld31_game *game, Ld31_level *lvl) {
+	int  x = 0;
+	int y = 0;
+	int i, j;
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "spawn");
+
+	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
+		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
+			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) == 2) {
+				x = i * tile_size;
+				y = j * tile_size;
+				break;
+			}
+		}
+	}
+
+	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, x, y);;
+	return e;
+}
+
+static entity *spawn_fireman(Ld31_game *game, Ld31_level *lvl) {
+	int  x = 0;
+	int y = 0;
+	int i, j;
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "spawn");
+
+	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
+		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
+			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) == 1) {
+				x = i * tile_size;
+				y = j * tile_size;
+				break;
+			}
+		}
+	}
+
+	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x, y);
+	return e;
+}
+
+static void spawn_objects(Ld31_game *game, Ld31_level *lvl) {
+	objects = SSL_List_Create();
+	int  x = 0;
+	int y = 0;
+	int i, j;
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "spawn");
+
+	for (i = 0; i < SSL_Tiled_Get_Width(lvl->map); i++) {
+		for (j = 0; j < SSL_Tiled_Get_Height(lvl->map); j++) {
+			if (SSL_Tiled_Get_TileId(lvl->map, i , j, layer) > 2) {
+				x = i * tile_size;
+				y = j * tile_size;
+				entity *e;
+
+				switch (SSL_Tiled_Get_TileId(lvl->map, i , j, layer)) {
+					case 3: {
+						e = create_entity("box", SSL_Image_Load("../extras/resources/sprites/box.png", 32, 32, game->window), up, x, y);
+						break;
+					}
+				}
+
+				SSL_List_Add(objects, e);
+			}
+		}
+	}
+}
 
 void play_game(Ld31_game *game) {
 
@@ -117,8 +190,10 @@ void play_game(Ld31_game *game) {
 	double s_fps = 0;
 
 	Ld31_level *level = load_level(0, game);
-	entity *e = create_entity("player", SSL_Image_Load("../extras/resources/sprites/snow_man.png", 32, 32, game->window), up, 100, 100);
-	entity *e2 = create_entity("player", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, 400, 400);
+
+	entity *e = spawn_snowman(game, level);
+	entity *e2 = spawn_fireman(game, level);
+	spawn_objects(game, level);
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
@@ -153,6 +228,12 @@ void play_game(Ld31_game *game) {
 
 		SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
 		SSL_Image_Draw(e2->image, e2->x, e2->y, e2->angle, 0, SDL_FLIP_NONE, game->window);
+
+		int i;
+		for (i = 1; i <= SSL_List_Size(objects); i++) {
+			entity *q = SSL_List_Get(objects, i);
+			SSL_Image_Draw(q->image, q->x, q->y, q->angle, 0, SDL_FLIP_NONE, game->window);
+		}
 
 		char buf[3];
 		itoa(s_fps, buf, 10);
