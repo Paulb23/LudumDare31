@@ -28,6 +28,16 @@ typedef struct _snowball_ {
 	long deletion_time;
 } Snowball;
 
+typedef struct _collectibles_ {
+	char *name;
+	int x;
+	int y;
+	SSL_Image *image;
+	int angle;
+	int value;
+} Collectible;
+
 entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y);
+Collectible *create_collectible(char *name, SSL_Image *image, int x,  int y);
 
 #endif

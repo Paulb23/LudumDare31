@@ -7,6 +7,7 @@
 
 int tile_size;
 SSL_List *snowballs;
+SSL_List *collectibles;
 long last_shot = 0;
 
 static void snowman_movement(Ld31_game *game, entity *e, float delta) {
@@ -172,6 +173,10 @@ void play_game(Ld31_game *game) {
 
 	SSL_Font *debug_font = SSL_Font_Load("../extras/resources/font/unispace.ttf", 18);
 
+	collectibles = SSL_List_Create();
+	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 200,200);
+	SSL_List_Add(collectibles, c);
+
 	int i = 0;
 	while (running) {
 		Uint32 now = SDL_GetTicks();
@@ -210,6 +215,11 @@ void play_game(Ld31_game *game) {
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
 			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
+		}
+
+		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
+			Collectible *e = SSL_List_Get(collectibles, i);
+			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
