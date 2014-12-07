@@ -2,6 +2,8 @@
 
 
 int main_menu(Ld31_game *game) {
+	Mix_Music *music;
+
 	int gamemode = -1;
 	int running = 1;
 	SDL_Event event;
@@ -85,6 +87,22 @@ int main_menu(Ld31_game *game) {
 			}
 		}
 	}
+
+	SSL_Image_Destroy(image);
+	free(image);
+	SSL_Image_Destroy(inst_suv_back);
+	free(inst_suv_back);
+	SSL_Interface_Destroy(interface);
+	free(interface);
+	free(exit_button);
+	free(survival_button);
+	SSL_Interface_Destroy(interface_istr);
+	free(interface_istr);
+	free(continue_button);
+	SSL_Font_Destroy(calibri);
+	free(calibri);
+	SSL_Font_Destroy(calibri_small);
+	free(calibri_small);
 
 	return gamemode;
 }
