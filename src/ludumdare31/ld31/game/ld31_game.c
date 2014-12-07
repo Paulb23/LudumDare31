@@ -16,6 +16,7 @@ long last_shot = 0;
 
 int speed_upgrades = 0;
 int proj_upgrades = 0;
+int health_upgrades = 0;
 int total_gold_collected;
 
 Mix_Chunk *shoot;
@@ -566,6 +567,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	total_gold_collected = 0;
 	speed_upgrades = 0;
 	proj_upgrades = 0;
+	health_upgrades = 0;
 
 	int i = 0;
 	int shop_open = 0;
@@ -638,7 +640,10 @@ void play_game(Ld31_game *game, int gamemode) {
 							Mix_PlayChannel(-1, upgrade, 0);
 							player->coins -= health_by_price;
 							player->health += 10;
-							health_by_price *= 2;
+							health_upgrades++;
+							if ((health_upgrades % 10) == 5) {
+								health_by_price += 5;
+							}
 					} else if (health_buy->button_status->clicked && player->coins < health_by_price) {
 
 					}
