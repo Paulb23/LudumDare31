@@ -954,14 +954,14 @@ void play_game(Ld31_game *game, int gamemode) {
 						amount++;
 					}
 					while (amount >= 0) {
-						int x = (rand() % 24 + 1) * tile_size;
-						int y = (rand() % 24 + 1) * tile_size;
+						int x = (rand() % 22 + 1) * tile_size;
+						int y = (rand() % 22 + 1) * tile_size;
 						int layer = SSL_Tiled_Get_LayerIndex(level->map, "collsion");
 						int valid = 0;
 
 						while (!valid) {
-							x = (rand() % 24 + 1) * tile_size;
-							y = (rand() % 24 + 1) * tile_size;
+							x = (rand() % 22 + 1) * tile_size;
+							y = (rand() % 22 + 1) * tile_size;
 
 							double dx = (player->x - x);
 							double dy = (player->y - y);
