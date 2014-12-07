@@ -15,6 +15,8 @@ int main_menu(Ld31_game *game) {
 
 	SSL_Image *inst_suv_back = SSL_Image_Load("../extras/resources/sprites/inst_suv_back.png", 768, 768, game->window);
 
+	SSL_Image *large_icon = SSL_Image_Load("../extras/resources/sprites/large_icon.png", 377, 370, game->window);
+
 	SSL_Interface *interface = SSL_Interface_Create();
 
 	SSL_Image_Button *exit_button = SSL_Image_Button_Create(SSL_Rectangle_Create(170,250, 384, 95), SSL_Image_Load("../extras/resources/sprites/exit_button.png", 384, 95, game->window) ,1,2,2);
@@ -72,6 +74,7 @@ int main_menu(Ld31_game *game) {
 						SSL_Font_Draw(150, 275, 0 ,SDL_FLIP_NONE, "Fire: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 						SSL_Font_Draw(210, 275, 0 ,SDL_FLIP_NONE, "Left Click", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
+						SSL_Image_Draw(large_icon, 5, 375, 0, 0, SDL_FLIP_NONE, game->window);
 					while(SDL_PollEvent(&event)) {
 
 						interface_update(interface_istr, event);
@@ -122,6 +125,8 @@ int main_menu(Ld31_game *game) {
 	free(image);
 	SSL_Image_Destroy(inst_suv_back);
 	free(inst_suv_back);
+	SSL_Image_Destroy(large_icon);
+	free(large_icon);
 	SSL_Interface_Destroy(interface);
 	free(interface);
 	free(exit_button);

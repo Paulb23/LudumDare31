@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
 	mute = 0;
 	Ld31_config *config = ld31_loadConfig();
 	Ld31_game *game = ld31_loadgame(config);
+	SSL_Window_Set_Icon(game->window, "../extras/resources/sprites/icon.png");
 	start_game(game);
 
 	return 0;
