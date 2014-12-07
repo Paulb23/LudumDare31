@@ -289,9 +289,42 @@ static void entity_shoot(Ld31_game *game, entity *e1, int x, int y, int angle, i
 	e1->last_shot = SDL_GetTicks();
 }
 
-static void move_entity(entity *e, entity *player, Ld31_game *game, float delta) {
+static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *game, float delta) {
 
 	if (strcmp(e->name, "fire") == 0 ) {
+		int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+		int speed = e->speed * delta;
+
+		switch(e->direction) {
+			case up: {
+				e->y -= speed;
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, e->y / tile_size, layer) == 1) {
+					e->direction = down;
+				}
+				break;
+			}
+			case down: {
+				e->y += speed;
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, (e->y / tile_size) + 1, layer) == 1) {
+					e->direction = up;
+				}
+				break;
+			}
+			case left: {
+				e->x -= speed;
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, e->y / tile_size, layer) == 1) {
+					e->direction = right;
+				}
+				break;
+			}
+			case right: {
+				e->y += speed;
+				if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, e->y / tile_size, layer) == 1) {
+					e->direction = left;
+				}
+				break;
+			}
+		}
 
 		double dx = (player->x - e->x);
 		double dy = (player->y - e->y);
@@ -315,7 +348,7 @@ static void update_entities(Ld31_level *lvl,entity *player, Ld31_game *game, flo
 		int i;
 		for (i = 1; i <= SSL_List_Size(entities); i++) {
 			entity *e = SSL_List_Get(entities, i);
-			move_entity(e, player, game, delta);
+			move_entity(e, lvl, player, game, delta);
 		}
 		update_fireballs(delta, lvl, 3, player, game);
 }
@@ -826,6 +859,12 @@ void play_game(Ld31_game *game, int gamemode) {
 						amount = (rand() % amount / 10 + 1);
 					}
 
+					if (SSL_List_Size(entities) + amount > uptime / 10) {
+						while (SSL_List_Size(entities) + amount > uptime / 10) {
+							amount--;
+						}
+					}
+
 					while (amount > 0) {
 						int x = (rand() % 22 + 2) * tile_size;
 						int y = (rand() % 22 + 2) * tile_size;
@@ -856,6 +895,26 @@ void play_game(Ld31_game *game, int gamemode) {
 						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 						e->damage = (rand() % 20 + 15);
 						e->health = (rand() % (((uptime / 10) * 100) / 2) + (((uptime / 10) * 100) / 3));
+						int dir = (rand() % 4 + 0);
+						switch (dir) {
+							case 0: {
+								e->direction = up;
+								break;
+							}
+							case 1: {
+								e->direction = down;
+								break;
+							}
+							case 2: {
+								e->direction = left;
+								break;
+							}
+							case 3: {
+								e->direction = right;
+								break;
+							}
+						}
+						e->speed = (rand() % 3 + 1);
 						e->attack_speed = 2000;
 						e->last_shot = 0;
 						SSL_List_Add(entities, e);
