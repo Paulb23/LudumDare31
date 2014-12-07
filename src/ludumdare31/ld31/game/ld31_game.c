@@ -298,28 +298,28 @@ static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *
 		switch(e->direction) {
 			case up: {
 				e->y -= speed;
-				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, e->y / tile_size, layer) == 1) {
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, (e->y / tile_size), layer) == 1) {
 					e->direction = down;
 				}
 				break;
 			}
 			case down: {
 				e->y += speed;
-				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, (e->y / tile_size) + 1, layer) == 1) {
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, ((e->y + tile_size) / tile_size), layer) == 1) {
 					e->direction = up;
 				}
 				break;
 			}
 			case left: {
 				e->x -= speed;
-				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, e->y / tile_size, layer) == 1) {
+				if (SSL_Tiled_Get_TileId(lvl->map, e->x / tile_size, (e->y / tile_size), layer) == 1) {
 					e->direction = right;
 				}
 				break;
 			}
 			case right: {
-				e->y += speed;
-				if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, e->y / tile_size, layer) == 1) {
+				e->x += speed;
+				if (SSL_Tiled_Get_TileId(lvl->map, (e->x  + tile_size) / tile_size, ((e->y) / tile_size), layer) == 1) {
 					e->direction = left;
 				}
 				break;
@@ -895,25 +895,26 @@ void play_game(Ld31_game *game, int gamemode) {
 						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 						e->damage = (rand() % 20 + 15);
 						e->health = (rand() % (((uptime / 10) * 100) / 2) + (((uptime / 10) * 100) / 3));
-						int dir = (rand() % 4 + 0);
+						int dir = (rand() % 4 + 1);
 						switch (dir) {
-							case 0: {
+							case 1: {
 								e->direction = up;
 								break;
 							}
-							case 1: {
+							case 2: {
 								e->direction = down;
 								break;
 							}
-							case 2: {
+							case 3: {
 								e->direction = left;
 								break;
 							}
-							case 3: {
+							case 4: {
 								e->direction = right;
 								break;
 							}
 						}
+
 						e->speed = (rand() % 3 + 1);
 						e->attack_speed = 2000;
 						e->last_shot = 0;
