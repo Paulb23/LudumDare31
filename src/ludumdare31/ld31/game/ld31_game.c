@@ -621,8 +621,11 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Image_Button *damage_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,650,384,100), SSL_Image_Load("../extras/resources/sprites/damage_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, damage_buy);
 
-	SSL_Image_Button *menu_button = SSL_Image_Button_Create(SSL_Rectangle_Create(370,600,384,100), SSL_Image_Load("../extras/resources/sprites/menu_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Image_Button *menu_button = SSL_Image_Button_Create(SSL_Rectangle_Create(370,50,384,100), SSL_Image_Load("../extras/resources/sprites/menu_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, menu_button);
+
+	SSL_Image_Button *cont_button = SSL_Image_Button_Create(SSL_Rectangle_Create(370,600,384,100), SSL_Image_Load("../extras/resources/sprites/continue_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, cont_button);
 
 	int speed_by_price = 10;
 	int attack_speed_by_price = 5;
@@ -725,6 +728,10 @@ void play_game(Ld31_game *game, int gamemode) {
 
 					if (menu_button->button_status->clicked) {
 						player->health = 0;
+					}
+
+					if (cont_button->button_status->clicked) {
+						shop_open = !shop_open;
 					}
 				}
 
@@ -988,6 +995,8 @@ void play_game(Ld31_game *game, int gamemode) {
 	free(shop_back);
 	SSL_Image_Destroy(time_icon);
 	free(time_icon);
+	SSL_Image_Destroy(cont_button);
+	free(cont_button);
 	SSL_Image_Destroy(ui_back);
 	free(ui_back);
 	SSL_Interface_Destroy(shop_inter);
