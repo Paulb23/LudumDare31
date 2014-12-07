@@ -817,37 +817,50 @@ void play_game(Ld31_game *game, int gamemode) {
 			}
 
 			if (gamemode == 0) {
-				if (SSL_List_Size(entities) < uptime / 10) {
-					int x = (rand() % 22 + 2) * tile_size;
-					int y = (rand() % 22 + 2) * tile_size;
-					int layer = SSL_Tiled_Get_LayerIndex(level->map, "collsion");
-					int valid = 0;
+				if (uptime % 10 == 0) {
+					int amount = 200;
 
-					while (!valid) {
-						x = (rand() % 21 + 2) * tile_size;
-						y = (rand() % 21 + 2) * tile_size;
+					if (uptime <= 200 ) {
+						amount = (rand() % uptime / 10 + 1);
+					} else {
+						amount = (rand() % amount / 10 + 1);
+					}
 
-						double dx = (player->x - x);
-						double dy = (player->y - y);
-						double dist = sqrt(dx*dx+dy*dy);
+					while (amount > 0) {
+						int x = (rand() % 22 + 2) * tile_size;
+						int y = (rand() % 22 + 2) * tile_size;
+						int layer = SSL_Tiled_Get_LayerIndex(level->map, "collsion");
+						int valid = 0;
 
-						if (SSL_Tiled_Get_TileId(level->map, (x / tile_size), (y / tile_size), layer) != 1 && dist > 400) {
-							valid = 1;
+						while (!valid) {
+							x = (rand() % 21 + 2) * tile_size;
+							y = (rand() % 21 + 2) * tile_size;
 
-							for (i = 1; i <= SSL_List_Size(entities); i++) {
-								entity *e = SSL_List_Get(entities, i);
-								if (collides(x,y,32,32,e->x,e->y,32,32)) {
-									valid = 0;
-									break;
+							double dx = (player->x - x);
+							double dy = (player->y - y);
+							double dist = sqrt(dx*dx+dy*dy);
+
+							if (SSL_Tiled_Get_TileId(level->map, (x / tile_size), (y / tile_size), layer) != 1 && dist > 400) {
+								valid = 1;
+
+								for (i = 1; i <= SSL_List_Size(entities); i++) {
+									entity *e = SSL_List_Get(entities, i);
+									if (collides(x,y,32,32,e->x,e->y,32,32)) {
+										valid = 0;
+										break;
+									}
 								}
 							}
 						}
-					}
 
-					entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
-					e->attack_speed = 2000;
-					e->last_shot = 0;
-					SSL_List_Add(entities, e);
+						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
+						e->damage = (rand() % 20 + 15);
+						e->health = (rand() % (((uptime / 10) * 100) / 2) + (((uptime / 10) * 100) / 3));
+						e->attack_speed = 2000;
+						e->last_shot = 0;
+						SSL_List_Add(entities, e);
+						amount--;
+					}
 				}
 			}
 		}
