@@ -828,6 +828,14 @@ void play_game(Ld31_game *game, int gamemode) {
 
 						if (SSL_Tiled_Get_TileId(level->map, (x / tile_size), (y / tile_size), layer) != 1 && dist > 400) {
 							valid = 1;
+
+							for (i = 1; i <= SSL_List_Size(entities); i++) {
+								entity *e = SSL_List_Get(entities, i);
+								if (collides(x,y,32,32,e->x,e->y,32,32)) {
+									valid = 0;
+									break;
+								}
+							}
 						}
 					}
 
