@@ -3,6 +3,8 @@
 #include "SDL2/SDL_Mixer.h"
 #include "ludumdare31/config.h"
 #include "ludumdare31/ld31/game.h"
+#include <time.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -12,6 +14,9 @@ int main(int argc, char *argv[]) {
 	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096);
 	Mix_VolumeMusic(50);
 	Mix_Volume(-1, 30);
+
+
+	srand(time(NULL));
 
 	mute = 0;
 	Ld31_config *config = ld31_loadConfig();

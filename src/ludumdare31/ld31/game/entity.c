@@ -28,8 +28,6 @@ entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y
 Collectible *create_collectible(char *name, int round, SSL_Image *image, int x,  int y) {
 	Collectible *entitys = malloc(sizeof(Collectible));
 
-	srand(time(NULL));
-
 	entitys->name = name;
 	entitys->image = image;
 	entitys->x = x;

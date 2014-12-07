@@ -362,7 +362,7 @@ static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *
 			e->angle = angleInDegrees;
 
 			if (SDL_GetTicks() >= e->last_shot + e->attack_speed) {
-				entity_shoot(game ,e, e->x, e->y, e->angle, 170, e->damage);
+				entity_shoot(game ,e, e->x, e->y, e->angle, e->projectle_speed, e->damage);
 			}
 		}
 	} else if (strcmp(e->name, "flame") == 0 ) {
@@ -377,7 +377,7 @@ static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *
 			e->angle = angleInDegrees;
 
 			if (SDL_GetTicks() >= e->last_shot + e->attack_speed) {
-				entity_shoot(game ,e, e->x, e->y, e->angle, 170, e->damage);
+				entity_shoot(game ,e, e->x, e->y, e->angle, e->projectle_speed, e->damage);
 			}
 		}
 	}
@@ -987,6 +987,8 @@ void play_game(Ld31_game *game, int gamemode) {
 							e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 							e->damage = (rand() % 20 + 15);
 							e->health = rand() % (current_round*100) + (((current_round*100) / 2) - 20 - ((current_round*100) / 2) - 30);
+							e->range = 500;
+							e->projectle_speed = 50;
 							int dir = (rand() % 4 + 1);
 							switch (dir) {
 								case 1: {
@@ -1015,6 +1017,8 @@ void play_game(Ld31_game *game, int gamemode) {
 							e->damage = (rand() % 1 + 1);
 							e->health = rand() % (current_round*100) + (((current_round*100) / 2) - ((current_round*100) / 2) - 20);
 							e->attack_speed = 100;
+							e->range = 500;
+							e->projectle_speed = 20;
 						}
 						e->last_shot = 0;
 						SSL_List_Add(entities, e);
