@@ -14,7 +14,7 @@
  </tileset>
  <layer name="map" width="24" height="24" opacity="0.9">
   <data encoding="base64" compression="zlib">
-   eJxjZ2BgYB/imJEITKp6xmFqPin6yXU/tcIBnzg5bh2p5hNjH6nm48uDxPqZXPcTWw6QG/7Udv9QTz9D0fzBVv6QYi8+tYTUcwIxFxBz0Mh8PiDmB2IeGpnPATWbF00PrTAA+ioGww==
+   eJxjZ2BgYB/imJEITKp6xmFqPin6yXU/tcIBnzg5bh2p5hNjH0wNEwnxgitNEutnct1PbDlAyHwmLHK0cP9QTz9D0fzBVv6QYi8+tYTUcwIxFxBz0Mh8PiDmB2IeKpmPngc5oGbzoumhFQYAA60Gxg==
   </data>
  </layer>
  <layer name="spawn" width="24" height="24" visible="0">
