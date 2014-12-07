@@ -185,7 +185,7 @@ static void update_snowman(Ld31_game *game, Ld31_level *lvl, entity *e, float de
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
-	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+//	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
 /*
 	// walls
 	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {			// right
@@ -496,7 +496,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	float delta = 0;
 	double fps = 0;
 	double tick = 0;
-	double s_fps = 0;
+	//double s_fps = 0;
 	int uptime = 0;
 
 	Ld31_level *level = load_level(0, game);
@@ -793,7 +793,7 @@ void play_game(Ld31_game *game, int gamemode) {
 
 		if (SDL_GetTicks() - timer > 1000) {
 			timer += 1000;
-			s_fps = fps;
+		//	s_fps = fps;
 			fps = 0;
 			tick = 0;
 
