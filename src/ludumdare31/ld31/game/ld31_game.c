@@ -30,6 +30,7 @@ Mix_Chunk *coin;
 Mix_Chunk *upgrade;
 Mix_Chunk *shop_sfx;
 Mix_Chunk *round_start;
+Mix_Chunk *round_end;
 
 int screen_shake_ticks = 0;
 int current_round = 0;
@@ -570,6 +571,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	shop_sfx = Mix_LoadWAV("../extras/resources/sound/shop_sfx.wav");
 
 	round_start = Mix_LoadWAV("../extras/resources/sound/round_start.wav");
+	round_end = Mix_LoadWAV("../extras/resources/sound/round_end.wav");
 
 
 	int running = 1;
@@ -658,6 +660,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	int shop_open = 0;
 	int start_round = 0;
 	current_round = 0;
+	int played_round_end = 1;
 	while (running) {
 		Uint32 now = SDL_GetTicks();
 		delta += (now - lastTime) / ns;
@@ -914,6 +917,10 @@ void play_game(Ld31_game *game, int gamemode) {
 				SSL_Font_Draw(280, 110, 0 ,SDL_FLIP_NONE, "Press", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 				SSL_Font_Draw(340, 110, 0 ,SDL_FLIP_NONE, game->config->start_round, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 				SSL_Font_Draw(280, 140, 0 ,SDL_FLIP_NONE, "For Next round", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+				if (played_round_end == 0) {
+					Mix_PlayChannel(-1, round_end, 0);
+					played_round_end = 1;
+				}
 			}
 		}
 
@@ -1003,6 +1010,7 @@ void play_game(Ld31_game *game, int gamemode) {
 						amount--;
 					}
 					start_round = 0;
+					played_round_end = 0;
 				}
 			}
 		}
