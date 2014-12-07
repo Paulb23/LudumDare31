@@ -469,6 +469,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Image *stats_back = SSL_Image_Load("../extras/resources/sprites/stats_back.png", 384, 768, game->window);
 	SSL_Image *gold_icon = SSL_Image_Load("../extras/resources/sprites/gold_icon.png", 32, 32, game->window);
 	SSL_Image *skull_icon = SSL_Image_Load("../extras/resources/sprites/skull_icon.png", 32, 32, game->window);
+	SSL_Image *time_icon = SSL_Image_Load("../extras/resources/sprites/time_icon.png", 32, 32, game->window);
 
 	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
 	SSL_Interface *shop_inter = SSL_Interface_Create();
@@ -734,6 +735,12 @@ void play_game(Ld31_game *game, int gamemode) {
 
 			itoa(player->health, buf, 10);
 			SSL_Font_Draw(75, 40, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			SSL_Image_Draw(time_icon, 140, 5, 0, 0, SDL_FLIP_NONE, game->window);
+
+			itoa(uptime, buf, 10);
+			SSL_Font_Draw(140, 40, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
@@ -783,6 +790,8 @@ void play_game(Ld31_game *game, int gamemode) {
 	free(gold_icon);
 	SSL_Image_Destroy(shop_back);
 	free(shop_back);
+	SSL_Image_Destroy(time_icon);
+	free(time_icon);
 	SSL_Image_Destroy(ui_back);
 	free(ui_back);
 	SSL_Interface_Destroy(shop_inter);
