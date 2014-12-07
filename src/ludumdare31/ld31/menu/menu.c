@@ -6,7 +6,6 @@ int main_menu(Ld31_game *game) {
 	printf("%s", Mix_GetError());
 	Mix_Music *music = Mix_LoadMUS("../extras/resources/sound/Phat_Sketch.wav");
 	Mix_PlayMusic(music, -1);
-	Mix_VolumeMusic(100);
 
 	int gamemode = -1;
 	int running = 1;
@@ -38,6 +37,9 @@ int main_menu(Ld31_game *game) {
 
 		SSL_Image_Draw(image, 0, 0, 0, 0 ,SDL_FLIP_NONE ,game->window);
 		interface_draw(interface, game->window);
+		SSL_Font_Draw(100, 375, 0 ,SDL_FLIP_NONE, "Press: ", calibri, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(220, 375, 0 ,SDL_FLIP_NONE, game->config->mute, calibri, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(85, 420, 0 ,SDL_FLIP_NONE, " To Toggle Mute at any time. ", calibri, SSL_Color_Create(255,255,255,0), game->window);
 
 		while(SDL_PollEvent(&event)) {
 
@@ -74,6 +76,16 @@ int main_menu(Ld31_game *game) {
 
 						interface_update(interface_istr, event);
 
+						if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
+							if (!mute) {
+								Mix_VolumeMusic(0);
+								mute = 1;
+							} else {
+								Mix_VolumeMusic(50);
+								mute = 0;
+							}
+						}
+
 						if (event.type == SDL_QUIT) {
 							exit(0);
 							break;
@@ -83,6 +95,16 @@ int main_menu(Ld31_game *game) {
 
 				gamemode = 0;
 				running = 0;
+			}
+
+			if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
+				if (!mute) {
+					Mix_VolumeMusic(0);
+					mute = 1;
+				} else {
+					Mix_VolumeMusic(50);
+					mute = 0;
+				}
 			}
 
 			if (event.type == SDL_QUIT || exit_button->button_status->clicked) {
@@ -107,6 +129,9 @@ int main_menu(Ld31_game *game) {
 	free(calibri);
 	SSL_Font_Destroy(calibri_small);
 	free(calibri_small);
+
+	Mix_PauseMusic();
+	Mix_FreeMusic( music );
 
 	return gamemode;
 }

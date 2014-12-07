@@ -357,6 +357,16 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 
 			interface_update(interface, event);
 
+			if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
+				if (!mute) {
+					Mix_VolumeMusic(0);
+					mute = 1;
+				} else {
+					Mix_VolumeMusic(50);
+					mute = 0;
+				}
+			}
+
 			if (menu_button->button_status->clicked) {
 				running = 0;
 			}
@@ -386,6 +396,9 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 }
 
 void play_game(Ld31_game *game, int gamemode) {
+
+	Mix_Music *music = Mix_LoadMUS("../extras/resources/sound/Electro_Sketch.wav");
+	Mix_PlayMusic(music, -1);
 
 	int running = 1;
 	SDL_Event event;
@@ -539,6 +552,16 @@ void play_game(Ld31_game *game, int gamemode) {
 
 					if (menu_button->button_status->clicked) {
 						player->health = 0;
+					}
+				}
+
+				if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
+					if (!mute) {
+						Mix_VolumeMusic(0);
+						mute = 1;
+					} else {
+						Mix_VolumeMusic(50);
+						mute = 0;
 					}
 				}
 

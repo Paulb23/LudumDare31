@@ -6,6 +6,8 @@
 #include "SDL2/SDL_Image.h"
 #include "SDL2/SDL_Mixer.h"
 
+int mute;
+
 typedef struct _ld31_keys_ {
 	char *up;
 	char *down;
@@ -23,6 +25,7 @@ typedef struct _LD31_Config_ {
 	int frames_per_second;
 	ld31_keys snowman_keys;
 	char *open_shop;
+	char *mute;
 } Ld31_config;
 
 typedef struct _LD31_Game_ {

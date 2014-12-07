@@ -28,6 +28,7 @@ Ld31_config *ld31_loadConfig() {
 	config->snowman_keys.left = iniparser_getstring(dict, "keys:snow_left", "_a");
 	config->snowman_keys.right = iniparser_getstring(dict, "keys:snow_right", "_d");
 	config->open_shop = iniparser_getstring(dict, "keys:open_shop", "_b");
+	config->mute = iniparser_getstring(dict, "keys:mute", "_m");
 
 	return config;
 }
