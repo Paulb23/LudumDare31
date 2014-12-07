@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	SSL_Window_Set_Icon(game->window, "../extras/resources/sprites/icon.png");
 
 	SDL_ShowCursor(0);
-	cursor = SSL_Image_Load("../extras/resources/sprites/cursor.png", 16, 16, game->window);
+	cursor = SSL_Image_Load("../extras/resources/sprites/cursor.png", 24, 24, game->window);
 
 	start_game(game);
 
