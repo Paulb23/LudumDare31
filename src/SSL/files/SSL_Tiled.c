@@ -284,7 +284,7 @@ void SSL_Tiled_Draw_Map(SSL_Tiled_Map *map, int xOffset, int yOffset, SSL_Window
 						 } else {
 							 frame = tiles[map->map.map_width * j + i];
 						 }
-						 SSL_Image_Draw(tileset->image, i * map->map.tile_width, j*map->map.tile_height,0,frame ,SDL_FLIP_NONE, window);
+						 SSL_Image_Draw(tileset->image, i * map->map.tile_width + xOffset, j*map->map.tile_height + yOffset,0,frame ,SDL_FLIP_NONE, window);
 					}
 				}
 			}

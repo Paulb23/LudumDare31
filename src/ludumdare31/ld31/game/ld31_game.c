@@ -28,6 +28,8 @@ Mix_Chunk *coin;
 Mix_Chunk *upgrade;
 Mix_Chunk *shop_sfx;
 
+int screen_shake_ticks = 0;
+
 static int rraytrace(Ld31_level *lvl, int x0, int y0, int x1, int y1) {
 	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
     int dx = abs(x1 - x0);
@@ -149,6 +151,7 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 
 			if (collides(e->entity->x, e->entity->y, 16,16, e1->x, e1->y, tile_size, tile_size)) {
 				Mix_PlayChannel(-1, hit_fire, 0);
+				screen_shake_ticks += 50;
 				collided = 1;
 				e1->health -= e->entity->damage;
 
@@ -171,6 +174,7 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 			float tmpy = e->entity->y - speed * cos(radians);
 			if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 				Mix_PlayChannel(-1, hit_fire, 0);
+				screen_shake_ticks += 10;
 				collided = 1;
 			}
 		}
@@ -274,6 +278,7 @@ static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *pl
 		int collided = 0;
 		if (collides(e->entity->x, e->entity->y, 16,16, player->x, player->y, tile_size, tile_size)) {
 				Mix_PlayChannel(-1, hit, 0);
+				screen_shake_ticks += 50;
 				player->health -= e->entity->damage;
 				collided = 1;
 		}
@@ -285,6 +290,7 @@ static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *pl
 		float tmpy = e->entity->y - speed * cos(radians);
 		if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 			Mix_PlayChannel(-1, hit_fire, 0);
+			screen_shake_ticks += 10;
 			collided = 1;
 		}
 
@@ -637,6 +643,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	speed_upgrades = 0;
 	proj_upgrades = 0;
 	health_upgrades = 0;
+	screen_shake_ticks = 0;
 
 	int i = 0;
 	int shop_open = 0;
@@ -649,6 +656,10 @@ void play_game(Ld31_game *game, int gamemode) {
 		SDL_RenderClear(game->window->renderer);
 
 		while (delta >= 1) {
+
+			if(screen_shake_ticks > 0) {
+				screen_shake_ticks -= delta;
+			}
 
 			if (!shop_open) {
 				update_snowman(game, level, player, delta);
@@ -768,13 +779,17 @@ void play_game(Ld31_game *game, int gamemode) {
 		}
 		fps++;
 
-		SSL_Tiled_Draw_Map(level->map, 0, -32, game->window);
+		int shakeX = 0;
+		int shakeY = 0;
+		if (screen_shake_ticks > 0) {
+			shakeX = (rand() %  10 + 0);
+			shakeY = (rand() %  10 + 0);
+		}
+		SSL_Tiled_Draw_Map(level->map, 0 + shakeX, shakeY, game->window);
 
-		SSL_Image_Draw(player->image, player->x, player->y, player->angle, 0, SDL_FLIP_NONE, game->window);
+		SSL_Image_Draw(player->image, player->x + shakeX, player->y + shakeY, player->angle, 0, SDL_FLIP_NONE, game->window);
 
 		char buf[3];
-
-
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
 			Snowball *e = SSL_List_Get(snowballs, i);
 			SSL_Image_Draw(e->entity->image, e->entity->x, e->entity->y, e->entity->angle, 0, SDL_FLIP_NONE, game->window);
