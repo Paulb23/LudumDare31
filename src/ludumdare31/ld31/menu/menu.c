@@ -2,16 +2,29 @@
 
 
 int main_menu(Ld31_game *game) {
-	int gamemode = 0;
+	int gamemode = -1;
 	int running = 1;
 	SDL_Event event;
 
 	SSL_Image *image = SSL_Image_Load("../extras/resources/sprites/main_menu_back.png", 768, 768, game->window);
 
+	SSL_Image *inst_suv_back = SSL_Image_Load("../extras/resources/sprites/inst_suv_back.png", 768, 768, game->window);
+
 	SSL_Interface *interface = SSL_Interface_Create();
 
-	SSL_Image_Button *exit_button = SSL_Image_Button_Create(SSL_Rectangle_Create(170,550, 384, 95), SSL_Image_Load("../extras/resources/sprites/exit_button.png", 384, 95, game->window) ,1,2,2);
+	SSL_Image_Button *exit_button = SSL_Image_Button_Create(SSL_Rectangle_Create(170,250, 384, 95), SSL_Image_Load("../extras/resources/sprites/exit_button.png", 384, 95, game->window) ,1,2,2);
 	SSL_Interface_Add_Image_Button(interface, exit_button);
+
+	SSL_Image_Button *survival_button = SSL_Image_Button_Create(SSL_Rectangle_Create(170,130, 384, 95), SSL_Image_Load("../extras/resources/sprites/survival_button.png", 384, 95, game->window) ,1,2,2);
+	SSL_Interface_Add_Image_Button(interface, survival_button);
+
+	SSL_Interface *interface_istr = SSL_Interface_Create();
+
+	SSL_Image_Button *continue_button = SSL_Image_Button_Create(SSL_Rectangle_Create(400,650, 384, 95), SSL_Image_Load("../extras/resources/sprites/continue_button.png", 384, 95, game->window) ,1,2,2);
+	SSL_Interface_Add_Image_Button(interface_istr, continue_button);
+
+	SSL_Font *calibri = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 44);
+	SSL_Font *calibri_small = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 22);
 
 	while (running) {
 		SDL_RenderPresent(game->window->renderer);
@@ -23,6 +36,48 @@ int main_menu(Ld31_game *game) {
 		while(SDL_PollEvent(&event)) {
 
 			interface_update(interface, event);
+
+			if (survival_button->button_status->clicked) {
+				while(!continue_button->button_status->clicked) {
+					SDL_RenderPresent(game->window->renderer);
+					SDL_RenderClear(game->window->renderer);
+
+					SSL_Image_Draw(inst_suv_back, 0, 0, 0, 0 ,SDL_FLIP_NONE ,game->window);
+					interface_draw(interface_istr, game->window);
+
+					SSL_Font_Draw(10, 100, 0 ,SDL_FLIP_NONE, "Controls: ", calibri, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(150, 150, 0 ,SDL_FLIP_NONE, "Up: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(190, 150, 0 ,SDL_FLIP_NONE, game->config->snowman_keys.up, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+						SSL_Font_Draw(150, 175, 0 ,SDL_FLIP_NONE, "Down: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(210, 175, 0 ,SDL_FLIP_NONE, game->config->snowman_keys.down, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+						SSL_Font_Draw(150, 200, 0 ,SDL_FLIP_NONE, "Left: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(210, 200, 0 ,SDL_FLIP_NONE, game->config->snowman_keys.left, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+						SSL_Font_Draw(150, 225, 0 ,SDL_FLIP_NONE, "Right: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(210, 225, 0 ,SDL_FLIP_NONE, game->config->snowman_keys.right, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+						SSL_Font_Draw(150, 250, 0 ,SDL_FLIP_NONE, "Shop: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(210, 250, 0 ,SDL_FLIP_NONE, game->config->open_shop, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+						SSL_Font_Draw(150, 275, 0 ,SDL_FLIP_NONE, "Fire: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+						SSL_Font_Draw(210, 275, 0 ,SDL_FLIP_NONE, "Left Click", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+					while(SDL_PollEvent(&event)) {
+
+						interface_update(interface_istr, event);
+
+						if (event.type == SDL_QUIT) {
+							exit(0);
+							break;
+						}
+					}
+				}
+
+				gamemode = 0;
+				running = 0;
+			}
 
 			if (event.type == SDL_QUIT || exit_button->button_status->clicked) {
 				exit(0);
