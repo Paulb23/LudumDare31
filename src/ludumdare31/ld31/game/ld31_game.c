@@ -194,7 +194,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 	}
 }
 
-static void update_fireballs(float delta, int speed, entity *player, Ld31_game *game) {
+static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *player, Ld31_game *game) {
 	speed *= delta;
 	int i;
 	for (i = 1; i <= SSL_List_Size(fireballs); i++) {
@@ -207,7 +207,15 @@ static void update_fireballs(float delta, int speed, entity *player, Ld31_game *
 				collided = 1;
 		}
 
+		int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+
 		double radians = (e->entity->angle * PI) / 180;
+		float tmpx = e->entity->x + speed * sin(radians);
+		float tmpy = e->entity->y - speed * cos(radians);
+		if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
+			collided = 1;
+		}
+
 		e->entity->x += speed * sin(radians);
 		e->entity->y -= speed * cos(radians);
 
@@ -270,7 +278,7 @@ static void update_entities(Ld31_level *lvl,entity *player, Ld31_game *game, flo
 			entity *e = SSL_List_Get(entities, i);
 			move_entity(e, player, game, delta);
 		}
-		update_fireballs(delta, 3, player, game);
+		update_fireballs(delta, lvl, 3, player, game);
 }
 
 Ld31_level *load_level(int level, Ld31_game *game) {
