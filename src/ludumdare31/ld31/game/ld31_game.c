@@ -1034,6 +1034,19 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Tiled_Map_Destroy(level->map);
 	free(level);
 
+	Mix_PauseMusic();
+	Mix_FreeMusic(music);
+	Mix_FreeChunk(shoot);
+	Mix_FreeChunk(shoot_fire);
+	Mix_FreeChunk(hit);
+	Mix_FreeChunk(hit_fire);
+	Mix_FreeChunk(death);
+	Mix_FreeChunk(coin);
+	Mix_FreeChunk(upgrade);
+	Mix_FreeChunk(shop_sfx);
+	Mix_FreeChunk(round_start);
+	Mix_FreeChunk(round_end);
+
 	start_game(game);
 }
 
