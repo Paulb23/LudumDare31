@@ -165,6 +165,9 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 					if (rand() % 100 + 0 <= 75) {
 						Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
 						SSL_List_Add(collectibles, c);
+					} else if (rand() % 100 + 0 <= 75) {
+						Collectible *c = create_collectible("health", SSL_Image_Load("../extras/resources/sprites/health_pack.png", 16,16,game->window), e1->x,e1->y);
+						SSL_List_Add(collectibles, c);
 					}
 					SSL_List_Remove(entities, e1);
 					SSL_Image_Destroy(e1->image);
@@ -228,33 +231,6 @@ static void update_snowman(Ld31_game *game, Ld31_level *lvl, entity *e, float de
 }
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
-//	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
-/*
-	// walls
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {			// right
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {
-			e->x -= 1;
-		}
-	}
-
-	if (SSL_Tiled_Get_TileId(lvl->map, ((e->x + tile_size) / tile_size) - 1, (e->y / tile_size), layer) == 1) {			// left
-		while (SSL_Tiled_Get_TileId(lvl->map, ((e->x + tile_size) / tile_size) - 1, (e->y / tile_size), layer) == 1) {
-			e->x += 1;
-		}
-	}
-
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y )/ tile_size) + 1, layer) == 1) {			// down
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y ) / tile_size) + 1, layer) == 1) {
-			e->y -= 1;
-		}
-	}
-
-	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {			// up
-		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {
-			e->y += 1;
-		}
-	}*/
-
 	if (strcmp(e->name, "player") == 0) {
 		int i;
 		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
@@ -265,6 +241,10 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 					e->coins += e1->value;
 					total_gold_collected += e1->value;
 					total_gold_collected_round += e1->value;
+				}
+
+				if (strcmp(e1->name, "health") == 0) {
+					e->health += e1->value;
 				}
 
 				SSL_Image_Destroy(e1->image);
