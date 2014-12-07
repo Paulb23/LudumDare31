@@ -19,6 +19,7 @@ int proj_upgrades = 0;
 int health_upgrades = 0;
 int total_gold_collected;
 int total_gold_collected_round;
+int max_health = 0;
 
 Mix_Chunk *shoot;
 Mix_Chunk *shoot_fire;
@@ -488,7 +489,7 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			SSL_Font_Draw(450, 460, 0 ,SDL_FLIP_NONE, "Proj. Speed: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(565, 460, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
-			itoa(player->health, buf, 10);
+			itoa(max_health, buf, 10);
 			SSL_Font_Draw(450, 485, 0 ,SDL_FLIP_NONE, "Health: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(525, 487, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
@@ -647,6 +648,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	speed_upgrades = 0;
 	proj_upgrades = 0;
 	health_upgrades = 0;
+	max_health = player->health;
 	screen_shake_ticks = 0;
 
 	int i = 0;
@@ -725,7 +727,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					if (health_buy->button_status->clicked && player->coins >= health_by_price) {
 							Mix_PlayChannel(-1, upgrade, 0);
 							player->coins -= health_by_price;
-							player->health += 10;
+							max_health += 10;
 							health_upgrades++;
 							if ((health_upgrades % 10) == 5) {
 								health_by_price += 5;
@@ -878,6 +880,9 @@ void play_game(Ld31_game *game, int gamemode) {
 			itoa(player->health, buf, 10);
 			SSL_Font_Draw(450, 485, 0 ,SDL_FLIP_NONE, "Health: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(525, 487, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(565, 485, 0 ,SDL_FLIP_NONE, "/", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			itoa(max_health, buf, 10);
+			SSL_Font_Draw(575, 487, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
 			itoa(player->damage, buf, 10);
 			SSL_Font_Draw(450, 510, 0 ,SDL_FLIP_NONE, "Damage: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
@@ -927,6 +932,7 @@ void play_game(Ld31_game *game, int gamemode) {
 				if (start_round == 1) {
 					current_round++;
 					total_gold_collected_round = 0;
+					player->health = max_health;
 					int max = 50;
 					int amount = current_round*current_round/2;
 
