@@ -1,8 +1,12 @@
+#include "menu.h"
 #include "../../config.h"
-
+#include "SDL2/SDL_Mixer.h"
 
 int main_menu(Ld31_game *game) {
-	Mix_Music *music;
+	printf("%s", Mix_GetError());
+	Mix_Music *music = Mix_LoadMUS("../extras/resources/sound/Phat_Sketch.wav");
+	Mix_PlayMusic(music, -1);
+	Mix_VolumeMusic(100);
 
 	int gamemode = -1;
 	int running = 1;
