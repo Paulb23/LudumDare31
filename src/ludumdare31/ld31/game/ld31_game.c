@@ -939,6 +939,9 @@ void play_game(Ld31_game *game, int gamemode) {
 					if (amount > max) {
 						amount = max;
 					}
+					if (amount == 0) {
+						amount++;
+					}
 					while (amount >= 0) {
 						int x = (rand() % 24 + 1) * tile_size;
 						int y = (rand() % 24 + 1) * tile_size;
