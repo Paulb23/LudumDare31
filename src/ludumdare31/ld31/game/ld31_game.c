@@ -18,6 +18,7 @@ int speed_upgrades = 0;
 int proj_upgrades = 0;
 int health_upgrades = 0;
 int total_gold_collected;
+int total_gold_collected_round;
 
 Mix_Chunk *shoot;
 Mix_Chunk *shoot_fire;
@@ -260,6 +261,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 				if (strcmp(e1->name, "coin") == 0) {
 					e->coins += e1->value;
 					total_gold_collected += e1->value;
+					total_gold_collected_round += e1->value;
 				}
 
 				SSL_Image_Destroy(e1->image);
@@ -464,7 +466,7 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			SSL_Font_Draw(450, 300, 0 ,SDL_FLIP_NONE, "Total Collected: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(600, 302, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
-			itoa(total_gold_collected, buf, 10);
+			itoa(total_gold_collected_round, buf, 10);
 			SSL_Font_Draw(450, 325, 0 ,SDL_FLIP_NONE, "Collected That Round: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(655, 327, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
@@ -641,6 +643,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	int health_by_price = 10;
 	int damage_by_price = 20;
 	total_gold_collected = 0;
+	total_gold_collected_round = 0;
 	speed_upgrades = 0;
 	proj_upgrades = 0;
 	health_upgrades = 0;
@@ -850,7 +853,7 @@ void play_game(Ld31_game *game, int gamemode) {
 			SSL_Font_Draw(450, 300, 0 ,SDL_FLIP_NONE, "Total Collected: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(600, 302, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
-			itoa(total_gold_collected, buf, 10);
+			itoa(total_gold_collected_round, buf, 10);
 			SSL_Font_Draw(450, 325, 0 ,SDL_FLIP_NONE, "Collected That Round: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(655, 327, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
@@ -923,6 +926,7 @@ void play_game(Ld31_game *game, int gamemode) {
 			if (gamemode == 0) {
 				if (start_round == 1) {
 					current_round++;
+					total_gold_collected_round = 0;
 					int max = 50;
 					int amount = current_round*current_round/2;
 
