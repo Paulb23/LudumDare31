@@ -156,7 +156,7 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 
 			if (collides(e->entity->x, e->entity->y, 16,16, e1->x, e1->y, tile_size, tile_size)) {
 				Mix_PlayChannel(-1, hit_fire, 0);
-				screen_shake_ticks += 50;
+				screen_shake_ticks = 50;
 				collided = 1;
 				e1->health -= e->entity->damage;
 
@@ -182,7 +182,7 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 			float tmpy = e->entity->y - speed * cos(radians);
 			if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 				Mix_PlayChannel(-1, hit_fire, 0);
-				screen_shake_ticks += 2;
+				screen_shake_ticks = 2;
 				collided = 1;
 			}
 		}
@@ -264,7 +264,7 @@ static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *pl
 		int collided = 0;
 		if (collides(e->entity->x, e->entity->y, 16,16, player->x, player->y, tile_size, tile_size)) {
 				Mix_PlayChannel(-1, hit, 0);
-				screen_shake_ticks += 50;
+				screen_shake_ticks = 50;
 				player->health -= e->entity->damage;
 				collided = 1;
 		}
@@ -276,7 +276,7 @@ static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *pl
 		float tmpy = e->entity->y - speed * cos(radians);
 		if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 			Mix_PlayChannel(-1, hit_fire, 0);
-			screen_shake_ticks += 2;
+			screen_shake_ticks = 2;
 			collided = 1;
 		}
 
@@ -362,7 +362,22 @@ static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *
 			e->angle = angleInDegrees;
 
 			if (SDL_GetTicks() >= e->last_shot + e->attack_speed) {
-				entity_shoot(game ,e, e->x, e->y, e->angle, 170, 10);
+				entity_shoot(game ,e, e->x, e->y, e->angle, 170, e->damage);
+			}
+		}
+	} else if (strcmp(e->name, "flame") == 0 ) {
+		double dx = (player->x - e->x);
+		double dy = (player->y - e->y);
+		double dist = sqrt(dx*dx+dy*dy);
+
+		if (dist < 200 && rraytrace(lvl, player->x, player->y, e->x, e->y) == 0) {
+			int deltaX = player->x - e->x ;
+			int deltaY = player->y - e->y;
+			int angleInDegrees = atan2(deltaX, -deltaY) * 180 / PI;
+			e->angle = angleInDegrees;
+
+			if (SDL_GetTicks() >= e->last_shot + e->attack_speed) {
+				entity_shoot(game ,e, e->x, e->y, e->angle, 170, e->damage);
 			}
 		}
 	}
@@ -964,31 +979,43 @@ void play_game(Ld31_game *game, int gamemode) {
 							}
 						}
 
-						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
-						e->damage = (rand() % 20 + 15);
-						e->health = rand() % (current_round*100) + (((current_round*100) / 2) - ((current_round*100) / 2) - 20);
-						int dir = (rand() % 4 + 1);
-						switch (dir) {
-							case 1: {
-								e->direction = up;
-								break;
-							}
-							case 2: {
-								e->direction = down;
-								break;
-							}
-							case 3: {
-								e->direction = left;
-								break;
-							}
-							case 4: {
-								e->direction = right;
-								break;
-							}
-						}
+						int entitiy_to_make = (rand() % 2 + 1);
+						entity *e;
 
-						e->speed = (rand() % 3 + 1);
-						e->attack_speed = 2000;
+						if (entitiy_to_make == 1) {
+							// moving fire
+							e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
+							e->damage = (rand() % 20 + 15);
+							e->health = rand() % (current_round*100) + (((current_round*100) / 2) - 20 - ((current_round*100) / 2) - 30);
+							int dir = (rand() % 4 + 1);
+							switch (dir) {
+								case 1: {
+									e->direction = up;
+									break;
+								}
+								case 2: {
+									e->direction = down;
+									break;
+								}
+								case 3: {
+									e->direction = left;
+									break;
+								}
+								case 4: {
+									e->direction = right;
+									break;
+								}
+							}
+
+							e->speed = (rand() % 3 + 1);
+							e->attack_speed = 2000;
+						} else if (entitiy_to_make == 2){
+							// stationary flame
+							e = create_entity("flame", SSL_Image_Load("../extras/resources/sprites/flame_man.png", 32, 32, game->window), up, x,y);
+							e->damage = (rand() % 1 + 1);
+							e->health = rand() % (current_round*100) + (((current_round*100) / 2) - ((current_round*100) / 2) - 20);
+							e->attack_speed = 100;
+						}
 						e->last_shot = 0;
 						SSL_List_Add(entities, e);
 						amount--;
