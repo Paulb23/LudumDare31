@@ -898,6 +898,7 @@ void play_game(Ld31_game *game, int gamemode) {
 				SSL_Font_Draw(340, 110, 0 ,SDL_FLIP_NONE, game->config->start_round, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 				SSL_Font_Draw(280, 140, 0 ,SDL_FLIP_NONE, "For Next round", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 				if (played_round_end == 0) {
+					player->health = max_health;
 					Mix_PlayChannel(-1, round_end, 0);
 					played_round_end = 1;
 				}
@@ -923,7 +924,6 @@ void play_game(Ld31_game *game, int gamemode) {
 				if (start_round == 1) {
 					current_round++;
 					total_gold_collected_round = 0;
-					player->health = max_health;
 					int max = 50;
 					int amount = current_round*current_round/2;
 
