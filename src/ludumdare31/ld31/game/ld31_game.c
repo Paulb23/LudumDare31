@@ -362,7 +362,7 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			}
 
 			if (event.type == SDL_QUIT) {
-				running = 0;
+				exit(0);
 				break;
 			}
 		}

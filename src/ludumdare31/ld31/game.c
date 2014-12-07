@@ -1,4 +1,5 @@
 #include "../config.h"
+#include "menu/menu.h"
 #include "game.h"
 #include "game/ld31_game.h"
 
