@@ -632,13 +632,6 @@ void play_game(Ld31_game *game, int gamemode) {
 		SSL_Image_Draw(player->image, player->x, player->y, player->angle, 0, SDL_FLIP_NONE, game->window);
 
 		char buf[3];
-		itoa(s_fps, buf, 10);
-		SSL_Font_Draw(0, 0, 0 ,SDL_FLIP_NONE, "FPS:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
-		SSL_Font_Draw(75, 0, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
-
-		itoa(player->coins, buf, 10);
-		SSL_Font_Draw(0, 25, 0 ,SDL_FLIP_NONE, "Coins:", debug_font, SSL_Color_Create(255,255,255,0), game->window);
-		SSL_Font_Draw(95, 25, 0 ,SDL_FLIP_NONE, buf, debug_font, SSL_Color_Create(255,255,255,0), game->window);
 
 
 		for (i = 1; i <= SSL_List_Size(snowballs); i++) {
