@@ -25,7 +25,7 @@ entity *create_entity(char *name, SSL_Image *image, direction dir, int x,  int y
 	return entitys;
 }
 
-Collectible *create_collectible(char *name, SSL_Image *image, int x,  int y) {
+Collectible *create_collectible(char *name, int round, SSL_Image *image, int x,  int y) {
 	Collectible *entitys = malloc(sizeof(Collectible));
 
 	srand(time(NULL));
@@ -36,10 +36,12 @@ Collectible *create_collectible(char *name, SSL_Image *image, int x,  int y) {
 	entitys->y = y;
 	entitys->angle = rand() % 360 + 0;
 
+	float multipler = (round * 2) / round;
+
 	if (strcmp(name, "health") == 0) {
-		entitys->value = rand() % 15 + 10;
+		entitys->value = rand() % (7) * multipler + (5) * multipler;
 	} else {
-		entitys->value = rand() % 10 + 1;
+		entitys->value = rand() % (10) * multipler + (1) * multipler;
 	}
 
 	return entitys;

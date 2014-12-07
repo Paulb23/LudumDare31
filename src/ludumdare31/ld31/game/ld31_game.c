@@ -163,10 +163,10 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 				if (e1->health <= 0) {
 					Mix_PlayChannel(-1, death, 0);
 					if (rand() % 100 + 0 <= 75) {
-						Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
+						Collectible *c = create_collectible("coin", current_round, SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
 						SSL_List_Add(collectibles, c);
 					} else if (rand() % 100 + 0 <= 75) {
-						Collectible *c = create_collectible("health", SSL_Image_Load("../extras/resources/sprites/health_pack.png", 16,16,game->window), e1->x,e1->y);
+						Collectible *c = create_collectible("health", current_round, SSL_Image_Load("../extras/resources/sprites/health_pack.png", 16,16,game->window), e1->x,e1->y);
 						SSL_List_Add(collectibles, c);
 					}
 					SSL_List_Remove(entities, e1);
@@ -582,7 +582,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Font *calibri_small = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 22);
 
 	collectibles = SSL_List_Create();
-	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 232,200);
+	Collectible *c = create_collectible("coin", 1, SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 232,200);
 	SSL_List_Add(collectibles, c);
 
 	entities = SSL_List_Create();
