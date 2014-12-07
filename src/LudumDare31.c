@@ -11,7 +11,8 @@ int main(int argc, char *argv[]) {
 	TTF_Init();
 
 	Ld31_config *config = ld31_loadConfig();
-	start_game(config);
+	Ld31_game *game = ld31_loadgame(config);
+	start_game(game);
 
 	return 0;
 }

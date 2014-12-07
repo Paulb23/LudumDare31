@@ -4,3 +4,27 @@ Sat Dec 06 18:39:31 2014
 : Failed to create image texture! 
 Sat Dec 06 18:40:05 2014
 : Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:58:40 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 
+Sat Dec 06 23:59:47 2014
+: Failed to create image texture! 

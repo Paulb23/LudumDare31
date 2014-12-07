@@ -2,8 +2,12 @@
 #include "game.h"
 #include "game/ld31_game.h"
 
-void start_game(Ld31_config *config) {
+void start_game(Ld31_game *game) {
+	int gamemode = main_menu(game);
 
-	Ld31_game *game = ld31_loadgame(config);
-	play_game(game, 0);
+	if (gamemode == -1) {
+		return;
+	}
+
+	play_game(game, gamemode);
 }

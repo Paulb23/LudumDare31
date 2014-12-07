@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "ld31_game.h"
 #include "math.h"
+#include "../game.h"
 
 #define PI 3.14159265359
 
@@ -707,5 +708,9 @@ void play_game(Ld31_game *game, int gamemode) {
 	free(projectile_speed_buy);
 	free(health_buy);
 	free(damage_buy);
+	SSL_Tiled_Map_Destroy(level->map);
+	free(level);
+
+	start_game(game);
 }
 

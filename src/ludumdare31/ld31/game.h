@@ -3,6 +3,6 @@
 
 #include "../config.h"
 
-void start_game(Ld31_config *config);
+void start_game(Ld31_game *game);
 
 #endif
