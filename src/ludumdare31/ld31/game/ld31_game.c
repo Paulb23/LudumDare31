@@ -28,6 +28,39 @@ Mix_Chunk *coin;
 Mix_Chunk *upgrade;
 Mix_Chunk *shop_sfx;
 
+static int rraytrace(Ld31_level *lvl, int x0, int y0, int x1, int y1) {
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+    int dx = abs(x1 - x0);
+    int dy = abs(y1 - y0);
+    int x = x0;
+    int y = y0;
+    int n = 1 + dx + dy;
+    int x_inc = (x1 > x0) ? 1 : -1;
+    int y_inc = (y1 > y0) ? 1 : -1;
+    int error = dx - dy;
+    dx *= 2;
+    dy *= 2;
+    for (; n > 0; --n)
+    {
+	// here I can use x,y to do something with the tile, in my case I just need to check if my tile is 1
+        if(SSL_Tiled_Get_TileId(lvl->map,x/tile_size,y/tile_size, layer) == 1) {
+        	return(1);
+        }
+        if (error > 0)
+        {
+            x += x_inc;
+            error -= dy;
+        }
+        else
+        {
+            y += y_inc;
+            error += dx;
+        }
+    }
+    // nothing blocking the line
+    return(0);
+}
+
 static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
   return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
 }
@@ -330,7 +363,7 @@ static void move_entity(entity *e, Ld31_level *lvl,  entity *player, Ld31_game *
 		double dy = (player->y - e->y);
 		double dist = sqrt(dx*dx+dy*dy);
 
-		if (dist < 400) {
+		if (dist < 400 && rraytrace(lvl, player->x, player->y, e->x, e->y) == 0) {
 			int deltaX = player->x - e->x ;
 			int deltaY = player->y - e->y;
 			int angleInDegrees = atan2(deltaX, -deltaY) * 180 / PI;
