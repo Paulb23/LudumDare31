@@ -497,7 +497,7 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			SSL_Font_Draw(450, 510, 0 ,SDL_FLIP_NONE, "Damage: ", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 			SSL_Font_Draw(540, 510, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
-			itoa(uptime, buf, 10);
+			itoa(current_round-1, buf, 10);
 			SSL_Font_Draw(160, 400, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
