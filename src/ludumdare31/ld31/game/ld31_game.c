@@ -174,7 +174,7 @@ static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game 
 			float tmpy = e->entity->y - speed * cos(radians);
 			if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 				Mix_PlayChannel(-1, hit_fire, 0);
-				screen_shake_ticks += 10;
+				screen_shake_ticks += 2;
 				collided = 1;
 			}
 		}
@@ -290,7 +290,7 @@ static void update_fireballs(float delta, Ld31_level *lvl, int speed, entity *pl
 		float tmpy = e->entity->y - speed * cos(radians);
 		if (SSL_Tiled_Get_TileId(lvl->map, (tmpx / tile_size), (tmpy / tile_size), layer) == 1) {
 			Mix_PlayChannel(-1, hit_fire, 0);
-			screen_shake_ticks += 10;
+			screen_shake_ticks += 2;
 			collided = 1;
 		}
 
