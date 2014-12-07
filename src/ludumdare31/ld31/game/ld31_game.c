@@ -29,6 +29,7 @@ Mix_Chunk *upgrade;
 Mix_Chunk *shop_sfx;
 
 int screen_shake_ticks = 0;
+int current_round = 0;
 
 static int rraytrace(Ld31_level *lvl, int x0, int y0, int x1, int y1) {
 	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
@@ -647,6 +648,8 @@ void play_game(Ld31_game *game, int gamemode) {
 
 	int i = 0;
 	int shop_open = 0;
+	int start_round = 0;
+	current_round = 0;
 	while (running) {
 		Uint32 now = SDL_GetTicks();
 		delta += (now - lastTime) / ns;
@@ -746,6 +749,10 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 				}
 
+				if (SSL_Keybord_Keyname_Pressed(game->config->start_round, event) && SSL_List_Size(entities) == 0 && !shop_open) {
+					start_round = 1;
+				}
+
 				if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
 					if (!mute) {
 						Mix_VolumeMusic(0);
@@ -802,12 +809,12 @@ void play_game(Ld31_game *game, int gamemode) {
 
 		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
 			Collectible *e = SSL_List_Get(collectibles, i);
-			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+			SSL_Image_Draw(e->image, e->x + shakeX, e->y + shakeY, e->angle, 0, SDL_FLIP_NONE, game->window);
 		}
 
 		for (i = 1; i <= SSL_List_Size(entities); i++) {
 			entity *e = SSL_List_Get(entities, i);
-			SSL_Image_Draw(e->image, e->x, e->y, e->angle, 0, SDL_FLIP_NONE, game->window);
+			SSL_Image_Draw(e->image, e->x + shakeX, e->y + shakeY, e->angle, 0, SDL_FLIP_NONE, game->window);
 		}
 
 		if (shop_open) {
@@ -887,9 +894,15 @@ void play_game(Ld31_game *game, int gamemode) {
 
 			SSL_Image_Draw(time_icon, 140, 5, 0, 0, SDL_FLIP_NONE, game->window);
 
-			itoa(uptime, buf, 10);
+			itoa(current_round, buf, 10);
 			SSL_Font_Draw(140, 40, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
+			if (start_round == 0 && SSL_List_Size(entities) == 0) {
+				SSL_Image_Draw(ui_back, 270, 100, 0, 0, SDL_FLIP_NONE, game->window);
+				SSL_Font_Draw(280, 110, 0 ,SDL_FLIP_NONE, "Press", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+				SSL_Font_Draw(340, 110, 0 ,SDL_FLIP_NONE, game->config->start_round, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+				SSL_Font_Draw(280, 140, 0 ,SDL_FLIP_NONE, "For Next round", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			}
 		}
 
 		int mx;
@@ -908,30 +921,23 @@ void play_game(Ld31_game *game, int gamemode) {
 			}
 
 			if (gamemode == 0) {
-				if (uptime % 10 == 0) {
-					int amount = 200;
+				if (start_round == 1) {
+					current_round++;
+					int max = 50;
+					int amount = current_round*current_round/2;
 
-					if (uptime <= 200 ) {
-						amount = (rand() % uptime / 10 + 1);
-					} else {
-						amount = (rand() % amount / 10 + 1);
+					if (amount > max) {
+						amount = max;
 					}
-
-					if (SSL_List_Size(entities) + amount > uptime / 10) {
-						while (SSL_List_Size(entities) + amount > uptime / 10) {
-							amount--;
-						}
-					}
-
-					while (amount > 0) {
-						int x = (rand() % 22 + 2) * tile_size;
-						int y = (rand() % 22 + 2) * tile_size;
+					while (amount >= 0) {
+						int x = (rand() % 24 + 1) * tile_size;
+						int y = (rand() % 24 + 1) * tile_size;
 						int layer = SSL_Tiled_Get_LayerIndex(level->map, "collsion");
 						int valid = 0;
 
 						while (!valid) {
-							x = (rand() % 21 + 2) * tile_size;
-							y = (rand() % 21 + 2) * tile_size;
+							x = (rand() % 24 + 1) * tile_size;
+							y = (rand() % 24 + 1) * tile_size;
 
 							double dx = (player->x - x);
 							double dy = (player->y - y);
@@ -952,7 +958,7 @@ void play_game(Ld31_game *game, int gamemode) {
 
 						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 						e->damage = (rand() % 20 + 15);
-						e->health = (rand() % (((uptime / 10) * 100) / 2) + (((uptime / 10) * 100) / 3));
+						e->health = rand() % (current_round*100) + ((current_round*100) - (current_round*100) / 2);
 						int dir = (rand() % 4 + 1);
 						switch (dir) {
 							case 1: {
@@ -979,6 +985,7 @@ void play_game(Ld31_game *game, int gamemode) {
 						SSL_List_Add(entities, e);
 						amount--;
 					}
+					start_round = 0;
 				}
 			}
 		}

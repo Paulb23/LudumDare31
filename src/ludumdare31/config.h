@@ -27,6 +27,7 @@ typedef struct _LD31_Config_ {
 	int frames_per_second;
 	ld31_keys snowman_keys;
 	char *open_shop;
+	char *start_round;
 	char *mute;
 } Ld31_config;
 
