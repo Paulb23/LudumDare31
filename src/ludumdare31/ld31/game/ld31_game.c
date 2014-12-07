@@ -29,6 +29,7 @@ Mix_Chunk *death;
 Mix_Chunk *coin;
 Mix_Chunk *upgrade;
 Mix_Chunk *shop_sfx;
+Mix_Chunk *round_start;
 
 int screen_shake_ticks = 0;
 int current_round = 0;
@@ -568,6 +569,8 @@ void play_game(Ld31_game *game, int gamemode) {
 
 	shop_sfx = Mix_LoadWAV("../extras/resources/sound/shop_sfx.wav");
 
+	round_start = Mix_LoadWAV("../extras/resources/sound/round_start.wav");
+
 
 	int running = 1;
 	SDL_Event event;
@@ -755,6 +758,7 @@ void play_game(Ld31_game *game, int gamemode) {
 				}
 
 				if (SSL_Keybord_Keyname_Pressed(game->config->start_round, event) && SSL_List_Size(entities) == 0 && !shop_open) {
+					Mix_PlayChannel(-1, round_start, 0);
 					start_round = 1;
 				}
 
