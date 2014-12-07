@@ -715,6 +715,10 @@ void play_game(Ld31_game *game, int gamemode) {
 							player->coins -= health_by_price;
 							max_health += 10;
 							health_upgrades++;
+							if (start_round == 0 && SSL_List_Size(entities) == 0) {
+								player->health = max_health;
+							}
+
 							if ((health_upgrades % 10) == 5) {
 								health_by_price += 5;
 							}
