@@ -170,7 +170,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 		int i;
 		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
 			Collectible *e1 = SSL_List_Get(collectibles, i);
-			if (collides(e->x, e->y, 32, 32, e1->x, e1->y, 16,16)) {
+			if (collides(e->x, e->y, 32, 32, e1->x, e1->y, 25,25)) {
 				Mix_PlayChannel(-1, coin, 0);
 				if (strcmp(e1->name, "coin") == 0) {
 					e->coins += e1->value;
