@@ -520,7 +520,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Font *calibri_small = SSL_Font_Load("../extras/resources/font/Calibri.ttf", 22);
 
 	collectibles = SSL_List_Create();
-	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 200,200);
+	Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), 232,200);
 	SSL_List_Add(collectibles, c);
 
 	entities = SSL_List_Create();
