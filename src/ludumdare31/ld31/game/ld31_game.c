@@ -995,8 +995,6 @@ void play_game(Ld31_game *game, int gamemode) {
 	free(shop_back);
 	SSL_Image_Destroy(time_icon);
 	free(time_icon);
-	SSL_Image_Destroy(cont_button);
-	free(cont_button);
 	SSL_Image_Destroy(ui_back);
 	free(ui_back);
 	SSL_Interface_Destroy(shop_inter);
