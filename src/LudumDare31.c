@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
 	TTF_Init();
 	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096);
 	Mix_VolumeMusic(50);
+	Mix_Volume(-1, 30);
 
 	mute = 0;
 	Ld31_config *config = ld31_loadConfig();

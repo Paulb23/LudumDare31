@@ -18,6 +18,15 @@ int speed_upgrades = 0;
 int proj_upgrades = 0;
 int total_gold_collected;
 
+Mix_Chunk *shoot;
+Mix_Chunk *shoot_fire;
+Mix_Chunk *hit;
+Mix_Chunk *hit_fire;
+Mix_Chunk *death;
+Mix_Chunk *coin;
+Mix_Chunk *upgrade;
+Mix_Chunk *shop_sfx;
+
 static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
   return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
 }
@@ -69,10 +78,12 @@ static void update_snowballs(float delta, int speed, Ld31_game *game) {
 			entity *e1 = SSL_List_Get(entities, j);
 
 			if (collides(e->entity->x, e->entity->y, 16,16, e1->x, e1->y, tile_size, tile_size)) {
+				Mix_PlayChannel(-1, hit_fire, 0);
 				collided = 1;
 				e1->health -= e->entity->damage;
 
 				if (e1->health <= 0) {
+					Mix_PlayChannel(-1, death, 0);
 					if (rand() % 100 + 0 <= 75) {
 						Collectible *c = create_collectible("coin", SSL_Image_Load("../extras/resources/sprites/coin.png", 16,16,game->window), e1->x,e1->y);
 						SSL_List_Add(collectibles, c);
@@ -103,6 +114,7 @@ static void update_snowballs(float delta, int speed, Ld31_game *game) {
 }
 
 static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed, int dmg) {
+	Mix_PlayChannel(-1, shoot, 0);
 	Snowball *e = malloc(sizeof(Snowball));
 	double radians = (angle * PI) / 180;
 	e->entity = create_entity("snowball", SSL_Image_Load("../extras/resources/sprites/snowball.png", 16, 16, game->window), up, x, y);
@@ -159,6 +171,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 		for (i = 1; i <= SSL_List_Size(collectibles); i++) {
 			Collectible *e1 = SSL_List_Get(collectibles, i);
 			if (collides(e->x, e->y, 32, 32, e1->x, e1->y, 16,16)) {
+				Mix_PlayChannel(-1, coin, 0);
 				if (strcmp(e1->name, "coin") == 0) {
 					e->coins += e1->value;
 					total_gold_collected += e1->value;
@@ -180,6 +193,7 @@ static void update_fireballs(float delta, int speed, entity *player, Ld31_game *
 
 		int collided = 0;
 		if (collides(e->entity->x, e->entity->y, 16,16, player->x, player->y, tile_size, tile_size)) {
+				Mix_PlayChannel(-1, hit, 0);
 				player->health -= e->entity->damage;
 				collided = 1;
 		}
@@ -203,6 +217,7 @@ static void update_fireballs(float delta, int speed, entity *player, Ld31_game *
 }
 
 static void entity_shoot(Ld31_game *game, entity *e1, int x, int y, int angle, int prospeed, int dmg) {
+	Mix_PlayChannel(-1, shoot_fire, 0);
 	Snowball *e = malloc(sizeof(Snowball));
 	double radians = (angle * PI) / 180;
 	e->entity = create_entity("fireball", SSL_Image_Load("../extras/resources/sprites/filreball.png", 16, 16, game->window), up, x, y);
@@ -360,9 +375,11 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
 				if (!mute) {
 					Mix_VolumeMusic(0);
+					Mix_Volume(-1, 0);
 					mute = 1;
 				} else {
 					Mix_VolumeMusic(50);
+					Mix_Volume(-1, 30);
 					mute = 0;
 				}
 			}
@@ -399,6 +416,21 @@ void play_game(Ld31_game *game, int gamemode) {
 
 	Mix_Music *music = Mix_LoadMUS("../extras/resources/sound/Electro_Sketch.wav");
 	Mix_PlayMusic(music, -1);
+
+	shoot = Mix_LoadWAV("../extras/resources/sound/shoot.wav");
+	shoot_fire = Mix_LoadWAV("../extras/resources/sound/shoot_fire.wav");
+
+	hit = Mix_LoadWAV("../extras/resources/sound/hit.wav");
+	hit_fire = Mix_LoadWAV("../extras/resources/sound/hit_fire.wav");
+
+	death = Mix_LoadWAV("../extras/resources/sound/death.wav");
+
+	coin = Mix_LoadWAV("../extras/resources/sound/coin.wav");
+
+	upgrade = Mix_LoadWAV("../extras/resources/sound/upgrade.wav");
+
+	shop_sfx = Mix_LoadWAV("../extras/resources/sound/shop_sfx.wav");
+
 
 	int running = 1;
 	SDL_Event event;
@@ -492,6 +524,7 @@ void play_game(Ld31_game *game, int gamemode) {
 			}
 
 			if (player->health <= 0) {
+				Mix_PlayChannel(-1, death, 0);
 				game_over(gamemode, uptime, event, game, player);
 				running = 0;
 			}
@@ -501,6 +534,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					interface_update(shop_inter ,event);
 
 					if (speed_buy->button_status->clicked && player->coins >= speed_by_price) {
+						Mix_PlayChannel(-1, upgrade, 0);
 						player->coins -= speed_by_price;
 						player->speed += 0.2;
 						speed_by_price *= 2;
@@ -510,6 +544,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 
 					if (attack_speed_buy->button_status->clicked && player->coins >= attack_speed_by_price) {
+						Mix_PlayChannel(-1, upgrade, 0);
 						player->coins -= attack_speed_by_price;
 						player->attack_speed += 10;
 						attack_speed_by_price *= 2;
@@ -518,6 +553,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 
 					if (range_buy->button_status->clicked && player->coins >= range_by_price) {
+						Mix_PlayChannel(-1, upgrade, 0);
 						player->coins -= range_by_price;
 						player->range += 2;
 						range_by_price *= 2;
@@ -526,6 +562,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 
 					if (projectile_speed_buy->button_status->clicked && player->coins >= projectile_speed_by_price) {
+							Mix_PlayChannel(-1, upgrade, 0);
 							player->coins -= projectile_speed_by_price;
 							player->projectle_speed += 0.2;
 							projectile_speed_by_price *= 2;
@@ -535,6 +572,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 
 					if (health_buy->button_status->clicked && player->coins >= health_by_price) {
+							Mix_PlayChannel(-1, upgrade, 0);
 							player->coins -= health_by_price;
 							player->health += 10;
 							health_by_price *= 2;
@@ -543,6 +581,7 @@ void play_game(Ld31_game *game, int gamemode) {
 					}
 
 					if (damage_buy->button_status->clicked && player->coins >= damage_by_price) {
+							Mix_PlayChannel(-1, upgrade, 0);
 							player->coins -= damage_by_price;
 							player->damage += 5;
 							damage_by_price *= 2;
@@ -558,15 +597,18 @@ void play_game(Ld31_game *game, int gamemode) {
 				if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
 					if (!mute) {
 						Mix_VolumeMusic(0);
+						Mix_Volume(-1, 0);
 						mute = 1;
 					} else {
 						Mix_VolumeMusic(50);
+						Mix_Volume(-1, 30);
 						mute = 0;
 					}
 				}
 
 				if (gamemode == 0) {
 					if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
+						Mix_PlayChannel(-1, shop_sfx, 0);
 						shop_open = !shop_open;
 					}
 				}

@@ -79,9 +79,11 @@ int main_menu(Ld31_game *game) {
 						if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
 							if (!mute) {
 								Mix_VolumeMusic(0);
+								Mix_Volume(-1, 0);
 								mute = 1;
 							} else {
 								Mix_VolumeMusic(50);
+								Mix_Volume(-1, 30);
 								mute = 0;
 							}
 						}
@@ -100,9 +102,11 @@ int main_menu(Ld31_game *game) {
 			if (SSL_Keybord_Keyname_Pressed(game->config->mute, event)) {
 				if (!mute) {
 					Mix_VolumeMusic(0);
+					Mix_Volume(-1, 0);
 					mute = 1;
 				} else {
 					Mix_VolumeMusic(50);
+					Mix_Volume(-1, 30);
 					mute = 0;
 				}
 			}
