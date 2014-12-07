@@ -962,7 +962,7 @@ void play_game(Ld31_game *game, int gamemode) {
 
 						entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 						e->damage = (rand() % 20 + 15);
-						e->health = rand() % (current_round*100) + ((current_round*100) - (current_round*100) / 2);
+						e->health = rand() % (current_round*100) + (((current_round*100) / 2) - ((current_round*100) / 2) - 20);
 						int dir = (rand() % 4 + 1);
 						switch (dir) {
 							case 1: {
@@ -982,7 +982,7 @@ void play_game(Ld31_game *game, int gamemode) {
 								break;
 							}
 						}
-
+						printf("%i \n", e->health);
 						e->speed = (rand() % 3 + 1);
 						e->attack_speed = 2000;
 						e->last_shot = 0;
