@@ -813,8 +813,24 @@ void play_game(Ld31_game *game, int gamemode) {
 
 			if (gamemode == 0) {
 				if (SSL_List_Size(entities) < uptime / 10) {
-					int x = (rand() % 21 + 2) * tile_size;
-					int y = (rand() % 21 + 2) * tile_size;
+					int x = (rand() % 22 + 2) * tile_size;
+					int y = (rand() % 22 + 2) * tile_size;
+					int layer = SSL_Tiled_Get_LayerIndex(level->map, "collsion");
+					int valid = 0;
+
+					while (!valid) {
+						x = (rand() % 21 + 2) * tile_size;
+						y = (rand() % 21 + 2) * tile_size;
+
+						double dx = (player->x - x);
+						double dy = (player->y - y);
+						double dist = sqrt(dx*dx+dy*dy);
+
+						if (SSL_Tiled_Get_TileId(level->map, (x / tile_size), (y / tile_size), layer) != 1 && dist > 400) {
+							valid = 1;
+						}
+					}
+
 					entity *e = create_entity("fire", SSL_Image_Load("../extras/resources/sprites/fire_man.png", 32, 32, game->window), up, x,y);
 					e->attack_speed = 2000;
 					e->last_shot = 0;
