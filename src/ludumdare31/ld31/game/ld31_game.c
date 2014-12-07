@@ -473,7 +473,7 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Image *shop_back = SSL_Image_Load("../extras/resources/sprites/shop_back.png", 384, 768, game->window);
 	SSL_Interface *shop_inter = SSL_Interface_Create();
 
-	SSL_Image *ui_back = SSL_Image_Load("../extras/resources/sprites/ui_back.png", 150, 64, game->window);
+	SSL_Image *ui_back = SSL_Image_Load("../extras/resources/sprites/ui_back.png", 200, 64, game->window);
 
 	SSL_Image_Button *speed_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,100,384,100), SSL_Image_Load("../extras/resources/sprites/speed_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, speed_buy);
@@ -725,10 +725,15 @@ void play_game(Ld31_game *game, int gamemode) {
 		} else {
 			SSL_Image_Draw(ui_back, 0, 0, 0, 0, SDL_FLIP_NONE, game->window);
 
-			SSL_Image_Draw(gold_icon, 5, 5, 0, 0, SDL_FLIP_NONE, game->window);
+			SSL_Image_Draw(gold_icon, 10, 5, 0, 0, SDL_FLIP_NONE, game->window);
 
 			itoa(player->coins, buf, 10);
-			SSL_Font_Draw(45, 15, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+			SSL_Font_Draw(10, 37, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
+
+			SSL_Image_Draw(skull_icon, 75, 5, 0, 0, SDL_FLIP_NONE, game->window);
+
+			itoa(player->health, buf, 10);
+			SSL_Font_Draw(75, 40, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 		}
 
 		if (SDL_GetTicks() - timer > 1000) {
