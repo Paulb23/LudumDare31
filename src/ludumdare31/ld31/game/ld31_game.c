@@ -446,6 +446,8 @@ void play_game(Ld31_game *game, int gamemode) {
 	SSL_Image_Button *damage_buy = SSL_Image_Button_Create(SSL_Rectangle_Create(0,650,384,100), SSL_Image_Load("../extras/resources/sprites/damage_button.png", 384, 100, game->window), 1, 2, 2);
 	SSL_Interface_Add_Image_Button(shop_inter, damage_buy);
 
+	SSL_Image_Button *menu_button = SSL_Image_Button_Create(SSL_Rectangle_Create(370,600,384,100), SSL_Image_Load("../extras/resources/sprites/menu_button.png", 384, 100, game->window), 1, 2, 2);
+	SSL_Interface_Add_Image_Button(shop_inter, menu_button);
 
 	int speed_by_price = 10;
 	int attack_speed_by_price = 5;
@@ -534,14 +536,15 @@ void play_game(Ld31_game *game, int gamemode) {
 					} else if (damage_buy->button_status->clicked && player->coins < damage_by_price) {
 
 					}
+
+					if (menu_button->button_status->clicked) {
+						player->health = 0;
+					}
 				}
 
 				if (gamemode == 0) {
 					if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
 						shop_open = !shop_open;
-					}
-					if (SSL_Keybord_Keyname_Pressed("_l", event)) {
-							player->health = 0;
 					}
 				}
 
