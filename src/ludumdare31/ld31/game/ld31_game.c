@@ -31,7 +31,38 @@ static int collides(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int 
   return (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + w2 && y1 + w1 > y2) ? 1: 0 ;
 }
 
-static void snowman_movement(Ld31_game *game, entity *e, float delta) {
+static void check_collision(Ld31_level *lvl, entity *e, float speedX, float speedY, float delta) {
+	float tmpX = e->x + speedX;
+	float tmpY = e->y + speedY;
+	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
+
+	// walls
+	if (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size), (tmpY / tile_size), layer) == 1) {			// right
+		while (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size), (tmpY / tile_size), layer) == 1) {
+			tmpX = e->x + 1;
+			tmpY = e->y + 1;
+		}
+	}
+
+	if (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size) + 1, (tmpY / tile_size), layer) == 1) {			// right
+		while (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size) + 1, (tmpY / tile_size), layer) == 1) {
+			tmpX = e->x - 1;
+			tmpY = e->y;
+		}
+	}
+
+	if (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size), (tmpY / tile_size) + 1, layer) == 1) {			// right
+		while (SSL_Tiled_Get_TileId(lvl->map, (tmpX / tile_size), (tmpY / tile_size) + 1, layer) == 1) {
+			tmpX = e->x;
+			tmpY = e->y - 1;
+		}
+	}
+
+	e->x = tmpX;
+	e->y = tmpY;
+}
+
+static void snowman_movement(Ld31_game *game, Ld31_level *lvl, entity *e, float delta) {
 		int x;
 		int y;
 
@@ -68,8 +99,7 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 			speedY += speed * cos(radians);
 		}
 
-		e->x += speedX;
-		e->y += speedY;
+		check_collision(lvl, e, speedX, speedY, delta);
 }
 
 static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game *game) {
@@ -147,7 +177,7 @@ static void snowman_shoot(Ld31_game *game, int x, int y, int angle, int prospeed
 }
 
 static void update_snowman(Ld31_game *game, Ld31_level *lvl, entity *e, float delta) {
-	snowman_movement(game, e, delta);
+	snowman_movement(game, lvl, e, delta);
 	if (SSL_Mouse_Left_Down() && SDL_GetTicks() >= last_shot + e->attack_speed) {
 		snowman_shoot(game, e->x, e->y, e->angle, e->range, e->damage);
 	}
@@ -156,7 +186,7 @@ static void update_snowman(Ld31_game *game, Ld31_level *lvl, entity *e, float de
 
 static void handle_collision(Ld31_level *lvl, entity *e) {
 	int layer = SSL_Tiled_Get_LayerIndex(lvl->map, "collsion");
-
+/*
 	// walls
 	if (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {			// right
 		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size) + 1, (e->y / tile_size), layer) == 1) {
@@ -180,7 +210,7 @@ static void handle_collision(Ld31_level *lvl, entity *e) {
 		while (SSL_Tiled_Get_TileId(lvl->map, (e->x / tile_size), ((e->y - tile_size) / tile_size), layer) == 1) {
 			e->y += 1;
 		}
-	}
+	}*/
 
 	if (strcmp(e->name, "player") == 0) {
 		int i;
