@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
 	Mix_Init(MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 	TTF_Init();
 	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096);
+	Mix_AllocateChannels(100);
 	Mix_VolumeMusic(50);
 	Mix_Volume(-1, 30);
 
