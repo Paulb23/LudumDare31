@@ -45,25 +45,31 @@ static void snowman_movement(Ld31_game *game, entity *e, float delta) {
 		double radians = (e->angle * PI) / 180;
 		int speed = e->speed * delta;
 
+		float speedX = 0;
+		float speedY = 0;
+
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.left)) {
-			e->x -= speed * cos(radians);
-			e->y -= speed * sin(radians);
+			speedX -= speed * cos(radians);
+			speedY -= speed * sin(radians);
 		}
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.right)) {
-			e->x += speed * cos(radians);
-			e->y += speed * sin(radians);
+			speedX += speed * cos(radians);
+			speedY += speed * sin(radians);
 		}
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.up)) {
-			e->x += speed * sin(radians);
-			e->y -= speed * cos(radians);
+			speedX += speed * sin(radians);
+			speedY -= speed * cos(radians);
 		}
 
 		if (SSL_Keybord_Keyname_Down(game->config->snowman_keys.down)) {
-			e->x -= speed * sin(radians);
-			e->y += speed * cos(radians);
+			speedX -= speed * sin(radians);
+			speedY += speed * cos(radians);
 		}
+
+		e->x += speedX;
+		e->y += speedY;
 }
 
 static void update_snowballs(float delta, Ld31_level *lvl, int speed, Ld31_game *game) {
