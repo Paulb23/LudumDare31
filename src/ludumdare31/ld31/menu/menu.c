@@ -43,6 +43,11 @@ int main_menu(Ld31_game *game) {
 		SSL_Font_Draw(220, 375, 0 ,SDL_FLIP_NONE, game->config->mute, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		SSL_Font_Draw(85, 420, 0 ,SDL_FLIP_NONE, " To Toggle Mute at any time. ", calibri, SSL_Color_Create(255,255,255,0), game->window);
 
+		SSL_Font_Draw(10, 510, 0 ,SDL_FLIP_NONE, "A Game by Crazy046! (c) 2014", calibri, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(10, 555, 0 ,SDL_FLIP_NONE, "Made in 48hrs for ludumdare 31!", calibri, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(10, 660, 0 ,SDL_FLIP_NONE, "Made With:", calibri, SSL_Color_Create(255,255,255,0), game->window);
+		SSL_Font_Draw(10, 715, 0 ,SDL_FLIP_NONE, "C, SDL 2, SDL_Mixer, SDL_TTF, SSL", calibri, SSL_Color_Create(255,255,255,0), game->window);
+
 		int mx;
 		int my;
 		SDL_GetMouseState(&mx,&my);
