@@ -9,9 +9,12 @@
  <tileset firstgid="27" name="spawn" tilewidth="32" tileheight="32">
   <image source="../tiles/spawn.png" width="32" height="32"/>
  </tileset>
+ <tileset firstgid="30" name="triggers" tilewidth="32" tileheight="32">
+  <image source="../tiles/triggers.png" width="64" height="32"/>
+ </tileset>
  <layer name="map" width="24" height="24" opacity="0.9">
   <data encoding="base64" compression="zlib">
-   eJxjZ2BgYB/imJEITKp6xmFqPin6yXU/tcIBnzg5bh2p5hNjH6nm48uDxPqZXPcTWw6QG/7Udv9QTz9D0fzBVv6QYi8+tYOlfqGlenYsemiFAbpaBnM=
+   eJxjZ2BgYB/imJEITKp6xmFqPin6yXU/tcIBnzg5bh2p5hNjH6nm48uDxPqZXPcTWw6QG/7Udv9QTz9D0fzBVv6QYi8+tYTUcwIxFxBz0Mh8PiDmJ0E9qeZzIKmhZZsBhgHvRgat
   </data>
  </layer>
  <layer name="spawn" width="24" height="24" visible="0">
@@ -22,6 +25,11 @@
  <layer name="collsion" width="24" height="24" visible="0">
   <data encoding="base64" compression="zlib">
    eJyTYmBgkBrimBhAqnpkPcPJfFL0k2M+PnFqmUOOH0ay+cTYR6r5+PIgsX4m1/3ElgPkhj+13U8MGDWfuuYPtvKHFHvxqR0s9Qst1dO6vYCMAR4vEkk=
+  </data>
+ </layer>
+ <layer name="triggers" width="24" height="24" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIJRMApGwVAHckiYlubTCtDSbGwAAK/gALU=
   </data>
  </layer>
 </map>

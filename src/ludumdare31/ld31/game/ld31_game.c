@@ -742,8 +742,11 @@ void play_game(Ld31_game *game, int gamemode) {
 
 				if (gamemode == 0) {
 					if (SSL_Keybord_Keyname_Pressed(game->config->open_shop, event)) {
-						Mix_PlayChannel(-1, shop_sfx, 0);
-						shop_open = !shop_open;
+						int layer = SSL_Tiled_Get_LayerIndex(level->map, "triggers");
+						if (SSL_Tiled_Get_TileId(level->map, player->x / tile_size, player->y / tile_size, layer) == 1) {
+							Mix_PlayChannel(-1, shop_sfx, 0);
+							shop_open = !shop_open;
+						}
 					}
 				}
 
