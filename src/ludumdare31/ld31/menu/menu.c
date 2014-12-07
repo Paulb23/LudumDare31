@@ -43,6 +43,11 @@ int main_menu(Ld31_game *game) {
 		SSL_Font_Draw(220, 375, 0 ,SDL_FLIP_NONE, game->config->mute, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		SSL_Font_Draw(85, 420, 0 ,SDL_FLIP_NONE, " To Toggle Mute at any time. ", calibri, SSL_Color_Create(255,255,255,0), game->window);
 
+		int mx;
+		int my;
+		SDL_GetMouseState(&mx,&my);
+		SSL_Image_Draw(cursor, mx, my, 0, 0, SDL_FLIP_NONE, game->window);
+
 		while(SDL_PollEvent(&event)) {
 
 			interface_update(interface, event);
@@ -75,6 +80,11 @@ int main_menu(Ld31_game *game) {
 						SSL_Font_Draw(210, 275, 0 ,SDL_FLIP_NONE, "Left Click", calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
 						SSL_Image_Draw(large_icon, 5, 375, 0, 0, SDL_FLIP_NONE, game->window);
+
+						int mx;
+						int my;
+						SDL_GetMouseState(&mx,&my);
+						SSL_Image_Draw(cursor, mx, my, 0, 0, SDL_FLIP_NONE, game->window);
 					while(SDL_PollEvent(&event)) {
 
 						interface_update(interface_istr, event);

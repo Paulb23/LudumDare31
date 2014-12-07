@@ -423,6 +423,11 @@ static void game_over(int gamemode, int uptime, SDL_Event event, Ld31_game *game
 			itoa(uptime, buf, 10);
 			SSL_Font_Draw(160, 400, 0 ,SDL_FLIP_NONE, buf, calibri, SSL_Color_Create(255,255,255,0), game->window);
 		}
+
+		int mx;
+		int my;
+		SDL_GetMouseState(&mx,&my);
+		SSL_Image_Draw(cursor, mx, my, 0, 0, SDL_FLIP_NONE, game->window);
 		while(SDL_PollEvent(&event)) {
 
 			interface_update(interface, event);
@@ -790,6 +795,11 @@ void play_game(Ld31_game *game, int gamemode) {
 			SSL_Font_Draw(140, 40, 0 ,SDL_FLIP_NONE, buf, calibri_small, SSL_Color_Create(255,255,255,0), game->window);
 
 		}
+
+		int mx;
+		int my;
+		SDL_GetMouseState(&mx,&my);
+		SSL_Image_Draw(cursor, mx, my, 0, 0, SDL_FLIP_NONE, game->window);
 
 		if (SDL_GetTicks() - timer > 1000) {
 			timer += 1000;

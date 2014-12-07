@@ -17,6 +17,10 @@ int main(int argc, char *argv[]) {
 	Ld31_config *config = ld31_loadConfig();
 	Ld31_game *game = ld31_loadgame(config);
 	SSL_Window_Set_Icon(game->window, "../extras/resources/sprites/icon.png");
+
+	SDL_ShowCursor(0);
+	cursor = SSL_Image_Load("../extras/resources/sprites/cursor.png", 16, 16, game->window);
+
 	start_game(game);
 
 	return 0;

@@ -6,6 +6,8 @@
 #include "SDL2/SDL_Image.h"
 #include "SDL2/SDL_Mixer.h"
 
+SSL_Image *cursor;
+
 int mute;
 
 typedef struct _ld31_keys_ {
