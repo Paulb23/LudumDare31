@@ -982,7 +982,7 @@ void play_game(Ld31_game *game, int gamemode) {
 								break;
 							}
 						}
-						printf("%i \n", e->health);
+
 						e->speed = (rand() % 3 + 1);
 						e->attack_speed = 2000;
 						e->last_shot = 0;
